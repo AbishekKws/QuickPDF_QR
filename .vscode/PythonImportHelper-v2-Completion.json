@@ -1,0 +1,140 @@
+[
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "send_from_directory",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "qrcode",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "qrcode",
+        "description": "qrcode",
+        "detail": "qrcode",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
+        "label": "ZipFile",
+        "importPath": "zipfile",
+        "description": "zipfile",
+        "isExtraImport": true,
+        "detail": "zipfile",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def index():\n    if request.method == \"POST\":\n        files = request.files.getlist(\"pdf_files\")\n        if files:\n            uploaded_files = []\n            zip_name = str(uuid.uuid4()) + \".zip\"\n            zip_path = os.path.join(ZIP_FOLDER, zip_name)\n            with ZipFile(zip_path, 'w') as zipf:\n                for file in files:\n                    if file.filename.endswith(\".pdf\"):",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "download_zip",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def download_zip(filename):\n    return send_from_directory(ZIP_FOLDER, filename)\n@app.route(\"/uploads/<filename>\")\ndef download_pdf(filename):\n    return send_from_directory(UPLOAD_FOLDER, filename)\nif __name__ == \"__main__\":\n    app.run(debug=True)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "download_pdf",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def download_pdf(filename):\n    return send_from_directory(UPLOAD_FOLDER, filename)\nif __name__ == \"__main__\":\n    app.run(debug=True)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__)\nUPLOAD_FOLDER = \"uploads\"\nQR_FOLDER = \"static/qr_codes\"\nZIP_FOLDER = \"uploads/zips\"\nos.makedirs(UPLOAD_FOLDER, exist_ok=True)\nos.makedirs(QR_FOLDER, exist_ok=True)\nos.makedirs(ZIP_FOLDER, exist_ok=True)\n@app.route(\"/\", methods=[\"GET\", \"POST\"])\ndef index():\n    if request.method == \"POST\":",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "UPLOAD_FOLDER",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "UPLOAD_FOLDER = \"uploads\"\nQR_FOLDER = \"static/qr_codes\"\nZIP_FOLDER = \"uploads/zips\"\nos.makedirs(UPLOAD_FOLDER, exist_ok=True)\nos.makedirs(QR_FOLDER, exist_ok=True)\nos.makedirs(ZIP_FOLDER, exist_ok=True)\n@app.route(\"/\", methods=[\"GET\", \"POST\"])\ndef index():\n    if request.method == \"POST\":\n        files = request.files.getlist(\"pdf_files\")",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "QR_FOLDER",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "QR_FOLDER = \"static/qr_codes\"\nZIP_FOLDER = \"uploads/zips\"\nos.makedirs(UPLOAD_FOLDER, exist_ok=True)\nos.makedirs(QR_FOLDER, exist_ok=True)\nos.makedirs(ZIP_FOLDER, exist_ok=True)\n@app.route(\"/\", methods=[\"GET\", \"POST\"])\ndef index():\n    if request.method == \"POST\":\n        files = request.files.getlist(\"pdf_files\")\n        if files:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "ZIP_FOLDER",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "ZIP_FOLDER = \"uploads/zips\"\nos.makedirs(UPLOAD_FOLDER, exist_ok=True)\nos.makedirs(QR_FOLDER, exist_ok=True)\nos.makedirs(ZIP_FOLDER, exist_ok=True)\n@app.route(\"/\", methods=[\"GET\", \"POST\"])\ndef index():\n    if request.method == \"POST\":\n        files = request.files.getlist(\"pdf_files\")\n        if files:\n            uploaded_files = []",
+        "detail": "app",
+        "documentation": {}
+    }
+]
