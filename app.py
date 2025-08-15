@@ -8,6 +8,8 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 QR_FOLDER = "static/qr_codes"
 ZIP_FOLDER = "uploads/zips"
+
+# Make sure folders exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(QR_FOLDER, exist_ok=True)
 os.makedirs(ZIP_FOLDER, exist_ok=True)
@@ -48,9 +50,5 @@ def index():
 def download_zip(filename):
     return send_from_directory(ZIP_FOLDER, filename)
 
-@app.route("/uploads/<filename>")
-def download_pdf(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
