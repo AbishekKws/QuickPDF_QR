@@ -5,11 +5,12 @@ import uuid
 from zipfile import ZipFile
 
 app = Flask(__name__)
+
 UPLOAD_FOLDER = "uploads"
 QR_FOLDER = "static/qr_codes"
 ZIP_FOLDER = "uploads/zips"
 
-# Make sure folders exist
+# Ensure folders exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(QR_FOLDER, exist_ok=True)
 os.makedirs(ZIP_FOLDER, exist_ok=True)
@@ -30,7 +31,10 @@ def index():
                         pdf_path = os.path.join(UPLOAD_FOLDER, unique_pdf_name)
                         file.save(pdf_path)
                         zipf.write(pdf_path, arcname=file.filename)
-                        uploaded_files.append({"original": file.filename, "path": pdf_path})
+                        uploaded_files.append({
+                            "original": file.filename,
+                            "saved": unique_pdf_name
+                        })
 
             zip_url = url_for("download_zip", filename=zip_name, _external=True)
             qr_img = qrcode.make(zip_url)
@@ -50,5 +54,9 @@ def index():
 def download_zip(filename):
     return send_from_directory(ZIP_FOLDER, filename)
 
+@app.route("/uploads/<filename>")
+def download_pdf(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
