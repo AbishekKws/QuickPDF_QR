@@ -2,78 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickPDF QR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QuickPDF QR | Smart & Fast</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
+        :root { --primary: #6c63ff; --glass: rgba(255, 255, 255, 0.95); }
+        html, body { height: 100%; margin: 0; overflow-x: hidden; }
         body {
-            background: linear-gradient(135deg, #6c63ff, #00bfff);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif; padding: 15px;
         }
-        .container-card { max-width: 600px; width: 100%; }
-        .info-card {
-            background: rgba(255,255,255,0.9);
-            padding: 1.5rem;
-            border-radius:12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin-bottom:1.5rem;
-        }
-        .upload-card {
-            background: rgba(255,255,255,0.95);
-            padding:2rem;
-            border-radius:15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            text-align:center;
-        }
-        .upload-card h2 { margin-bottom:1.5rem; font-weight:700; color:#333; }
-        .form-control-file {
-            border: 2px dashed #6c63ff;
-            border-radius:10px;
-            padding:1rem;
-            cursor:pointer;
-            transition:0.3s;
-        }
-        .form-control-file:hover { background: rgba(108,99,255,0.1); }
-        .btn-submit {
-            background:#6c63ff;
-            color:white;
-            font-weight:600;
-            padding:.75rem 2rem;
-            border-radius:10px;
-            border:none;
-            transition:.3s;
-        }
-        .btn-submit:hover { background:#574fd1; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .header-section { text-align: center; color: white; margin-bottom: 25px; animation: slideDown 0.8s ease-out; }
+        .header-section h1 { font-weight: 800; font-size: clamp(1.8rem, 6vw, 2.8rem); text-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0; }
+        .main-wrapper { width: 100%; max-width: 950px; display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 768px) { .main-wrapper { flex-direction: row; align-items: stretch; } .info-card, .upload-card { flex: 1; } }
+        .info-card, .upload-card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 28px; padding: 2.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .step-item { display: flex; align-items: flex-start; margin-bottom: 1.5rem; }
+        .step-number { background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin-right: 15px; flex-shrink: 0; }
+        .step-text h6 { font-weight: 700; margin-bottom: 2px; color: #333; }
+        .step-text p { font-size: 0.85rem; color: #555; margin: 0; }
+        .upload-card { text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .upload-card h2 { font-weight: 800; margin-bottom: 1.5rem; color: #1a1a1a; }
+        .custom-file-input { border: 2px dashed var(--primary); background: rgba(108, 99, 255, 0.05); border-radius: 16px; padding: 2rem 1rem; width: 100%; transition: 0.3s; color: #666; font-weight: 600; }
+        .btn-submit { background: linear-gradient(135deg, #6c63ff 0%, #00bfff 100%); color: white; font-weight: 700; padding: 1.1rem; border-radius: 15px; border: none; width: 100%; font-size: 1.1rem; box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); transition: 0.3s; margin-top: 1rem; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(108, 99, 255, 0.5); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 767px) { body { height: auto; overflow-y: auto; } .info-card { order: 2; } .upload-card { order: 1; } }
     </style>
 </head>
 <body>
-
-<div class="container-card">
-    <div class="info-card">
-        <h4>About QuickPDF QR</h4>
-        <p>Upload multiple PDFs and get a single QR code. Scan it to download all PDFs as a ZIP file instantly.</p>
-        <ul>
-            <li>Upload multiple PDFs at once</li>
-            <li>ZIP file created automatically</li>
-            <li>Single QR code for easy sharing</li>
-            <li>Direct download links for each PDF</li>
-        </ul>
+    <div class="header-section">
+        <h1>Amazing Tool 🙏</h1>
+        <p>Your PDFs to QR code magic happens here.</p>
     </div>
-
-    <div class="upload-card">
-        <h2>Upload PDFs to Generate QR</h2>
-        <form method="post" enctype="multipart/form-data">
-            <input type="file" name="pdf_files" accept=".pdf" multiple required class="form-control-file mb-3">
-            <button type="submit" class="btn-submit">Upload & Generate QR</button>
-        </form>
-        <small class="text-muted d-block mt-3">Scan the QR after upload to download your PDFs.</small>
+    <div class="main-wrapper">
+        <div class="info-card">
+            <h4 class="mb-4" style="font-weight:800; color:var(--primary);">🚀 Quick Guide</h4>
+            <div class="step-item"><div class="step-number">1</div><div class="step-text"><h6>Batch Upload</h6><p>Select all the PDFs you want to share.</p></div></div>
+            <div class="step-item"><div class="step-number">2</div><div class="step-text"><h6>Instant ZIP</h6><p>System bundles them automatically.</p></div></div>
+            <div class="step-item"><div class="step-number">3</div><div class="step-text"><h6>QR Generation</h6><p>Scan to download documents instantly.</p></div></div>
+        </div>
+        <div class="upload-card">
+            <h2>Ready to Start?</h2>
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" name="pdf_files" id="pdf_files" accept=".pdf" multiple required class="form-control custom-file-input">
+                </div>
+                <button type="submit" class="btn-submit">Upload & Generate QR &rarr;</button>
+            </form>
+            <div class="mt-4"><small class="text-muted">🔒 Secure & Private Processing</small></div>
+        </div>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
