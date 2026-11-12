@@ -4,6 +4,134 @@
 {% block description %}Three steps: add your files, get a QR code, scan and download. See how QR sharing, conversion in both directions and automatic file cleanup work.{% endblock %}
 {% block keywords %}<meta name="keywords" content="how qr code file sharing works, share pdf with qr code, pdf qr download page">{% endblock %}
 
+{% block head_extra %}
+<style>
+    /* ==========================================================
+       Page styles: how_it_works.html
+       Uses the fluid variables from base.html (--space-*, --fs-*, --brand ...)
+       ========================================================== */
+
+    .page-head {
+        text-align: center;
+        max-width: 760px;
+        margin: 0 auto var(--space-4);
+        padding-top: var(--space-2);
+    }
+    .eyebrow {
+        display: inline-block;
+        padding: 6px 14px; margin-bottom: var(--space-2);
+        border-radius: 999px;
+        background: var(--brand-100); color: var(--brand);
+        font-size: var(--fs-sm); font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .page-head h1 { margin-bottom: var(--space-2); }
+    .grad {
+        background: linear-gradient(135deg, var(--brand), #b58cff 70%, #ff8acd);
+        -webkit-background-clip: text; background-clip: text;
+        -webkit-text-fill-color: transparent; color: transparent;
+    }
+    .lede {
+        font-size: var(--fs-lg); color: var(--ink-soft);
+        max-width: 60ch; margin-inline: auto;
+    }
+
+    .tool-panel { width: 100%; max-width: 860px; margin-inline: auto; }
+    .tool-panel .card {
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: clamp(18px, 4vw, 40px);
+        margin-top: var(--space-3);
+    }
+    .tool-panel .card h2 { font-size: var(--fs-h3); }
+    .lead { color: var(--ink-soft); margin-bottom: var(--space-3); }
+
+    /* ---------- Steps ---------- */
+    .steps {
+        list-style: none; margin: 0; padding: 0;
+        display: grid; gap: var(--space-3);
+    }
+    .step {
+        display: flex; align-items: flex-start; gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+    }
+    .step h3 { margin: 0 0 4px; }
+    .step p { margin: 0; color: var(--ink-soft); font-size: var(--fs-base); }
+    .step-num {
+        flex: 0 0 auto;
+        display: grid; place-items: center;
+        width: clamp(34px, 5vw, 42px); aspect-ratio: 1; border-radius: 50%;
+        background: linear-gradient(135deg, var(--brand), #8f7bff);
+        color: #fff; font-weight: 800; font-size: var(--fs-lg);
+        box-shadow: 0 8px 18px rgba(108, 99, 255, .3);
+    }
+
+    /* ---------- Feature cards (inside the "two directions" card) ---------- */
+    .feat-grid {
+        display: grid; gap: var(--space-3);
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    }
+    .feat {
+        display: flex; flex-direction: column;
+        padding: var(--space-3);
+        background: linear-gradient(180deg, #ffffff, #f8f7ff);
+        border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+    }
+    .feat-icon {
+        display: grid; place-items: center;
+        width: clamp(38px, 6vw, 46px); aspect-ratio: 1; margin-bottom: var(--space-2);
+        border-radius: 13px; color: #fff;
+        background: linear-gradient(135deg, var(--brand), #8f7bff 60%, #b58cff);
+        box-shadow: 0 8px 20px rgba(108, 99, 255, .3);
+    }
+    .feat-icon svg { width: 46%; height: auto; }
+    .feat h3 { margin: 0 0 6px; }
+    .feat p { margin: 0; color: var(--ink-soft); font-size: var(--fs-sm); flex: 1; }
+    .feat .feat-link { margin: var(--space-2) 0 0; flex: 0 0 auto; }
+    .feat .backlink { padding-left: 0; }
+    .feat .backlink:hover { background: transparent; text-decoration: underline; }
+
+    /* ---------- Notes ---------- */
+    .note {
+        display: flex; align-items: flex-start; gap: 12px;
+        padding: var(--space-2) var(--space-3);
+        border-radius: 14px; background: #f5f4ff; border: 1px solid var(--line);
+        font-size: var(--fs-sm); color: var(--ink-soft); line-height: 1.55;
+    }
+    .note + .note { margin-top: var(--space-2); }
+    .note strong { color: var(--ink); }
+    .note .bullet {
+        flex: 0 0 auto; display: grid; place-items: center;
+        width: 24px; height: 24px; border-radius: 50%;
+        background: var(--brand); color: #fff; font-size: .78rem; font-weight: 800;
+    }
+
+    .center-cta {
+        display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+        gap: 4px var(--space-2); margin: var(--space-4) 0 0; text-align: center;
+    }
+    .center-cta .btn { min-width: 220px; min-height: 52px; font-size: var(--fs-md); }
+    .backlink {
+        display: inline-block; padding: 10px 18px; border-radius: 999px;
+        color: var(--brand); font-weight: 700; font-size: var(--fs-sm);
+        text-decoration: none; line-height: 1.4;
+        transition: background .2s;
+    }
+    .backlink:hover { background: var(--brand-100); }
+
+    @media (max-width: 640px) {
+        .tool-panel .card { border-radius: var(--radius); }
+        .step { padding: var(--space-3); }
+        .center-cta .btn { width: 100%; min-width: 0; }
+    }
+    @media (max-width: 400px) {
+        .note { flex-direction: column; gap: 8px; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <section class="page-head">
         <span class="eyebrow">How it works</span>
@@ -36,7 +164,7 @@
             </li>
         </ol>
 
-        <section class="card" style="margin-top: 18px;">
+        <section class="card">
             <h2>Two directions, one workflow</h2>
             <p class="lead">Conversion and sharing are separate tools, but the result is always the same QR download page.</p>
             <div class="feat-grid">
@@ -48,7 +176,7 @@
                     </div>
                     <h3>Into a PDF</h3>
                     <p>Photos become A4 pages, Excel and CSV sheets become a table, and text becomes a readable document. Nepali and English both render correctly.</p>
-                    <p style="margin-top: 10px;"><a class="backlink" href="{{ url_for('convert') }}">Open the converter →</a></p>
+                    <p class="feat-link"><a class="backlink" href="{{ url_for('convert') }}">Open the converter →</a></p>
                 </article>
                 <article class="feat">
                     <div class="feat-icon">
@@ -58,7 +186,7 @@
                     </div>
                     <h3>Out of a PDF</h3>
                     <p>Every page as a JPG, or the text layer extracted into TXT, Word and Excel. Up to 20 pages per conversion, with the DPI adjusted to stay small.</p>
-                    <p style="margin-top: 10px;"><a class="backlink" href="{{ url_for('convert_from_pdf') }}">Open the reverse tool →</a></p>
+                    <p class="feat-link"><a class="backlink" href="{{ url_for('convert_from_pdf') }}">Open the reverse tool →</a></p>
                 </article>
                 <article class="feat">
                     <div class="feat-icon">
@@ -69,12 +197,12 @@
                     </div>
                     <h3>Share the result</h3>
                     <p>Upload existing PDFs and get a QR code straight away, complete with a ZIP download and the original file names intact.</p>
-                    <p style="margin-top: 10px;"><a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF →</a></p>
+                    <p class="feat-link"><a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF →</a></p>
                 </article>
             </div>
         </section>
 
-        <section class="card" style="margin-top: 18px;">
+        <section class="card">
             <h2>Privacy and limits</h2>
             <p class="lead">Short-lived links by design, so nothing piles up on the server.</p>
             <div class="note">

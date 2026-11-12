@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#6c63ff">
     <title>QR Ready | QuickPDF QR</title>
     <meta name="robots" content="noindex, nofollow">
@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ===== QR Ready page: responsive + premium ===== */
         :root {
             --ink: #12172b;
             --muted: #6b7280;
@@ -18,29 +19,46 @@
             --brand: #6c63ff;
             --brand-2: #22a7f0;
             --accent: #f0559b;
+
+            /* Fluid sizes: scale with the screen */
+            --pad: clamp(12px, 4vw, 40px);
+            --card-pad: clamp(18px, 5vw, 38px);
+            --fs-xs: clamp(.68rem, .64rem + .2vw, .76rem);
+            --fs-sm: clamp(.78rem, .74rem + .25vw, .9rem);
+            --fs-md: clamp(.9rem, .86rem + .3vw, 1.02rem);
+            --fs-h1: clamp(1.25rem, 1.05rem + 1.8vw, 1.8rem);
         }
         * { box-sizing: border-box; }
-        html, body { margin: 0; min-height: 100%; }
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        html, body { margin: 0; }
 
         body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             color: var(--ink);
             background: #fbfaff;
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex; align-items: center; justify-content: center;
-            padding: clamp(14px, 4vw, 40px);
+            padding:
+                max(var(--pad), env(safe-area-inset-top))
+                max(var(--pad), env(safe-area-inset-right))
+                max(var(--pad), env(safe-area-inset-bottom))
+                max(var(--pad), env(safe-area-inset-left));
             position: relative; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         body::before, body::after {
             content: ""; position: fixed; z-index: -1; border-radius: 50%;
-            filter: blur(90px); opacity: .55;
+            filter: blur(90px); opacity: .55; pointer-events: none;
         }
-        body::before { width: 420px; height: 420px; top: -150px; left: -110px; background: #d9d4ff; }
-        body::after { width: 480px; height: 480px; bottom: -190px; right: -130px; background: #cdeeff; }
+        body::before { width: min(420px, 80vw); aspect-ratio: 1; top: -150px; left: -110px; background: #d9d4ff; }
+        body::after { width: min(480px, 90vw); aspect-ratio: 1; bottom: -190px; right: -130px; background: #cdeeff; }
 
         .card {
-            width: 100%; max-width: 460px;
-            background: #fff; border: 1px solid var(--line); border-radius: 28px;
-            padding: clamp(22px, 5vw, 34px);
+            width: 100%;
+            max-width: clamp(320px, 92vw, 520px);
+            background: #fff; border: 1px solid var(--line); border-radius: clamp(20px, 4vw, 28px);
+            padding: var(--card-pad);
             box-shadow: 0 24px 60px rgba(17, 24, 39, .10);
             text-align: center;
             animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
@@ -48,78 +66,121 @@
         @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 
         .tick {
-            width: 54px; height: 54px; margin: 0 auto 14px; border-radius: 50%;
+            width: clamp(48px, 10vw, 60px); aspect-ratio: 1;
+            margin: 0 auto 14px; border-radius: 50%;
             display: grid; place-items: center; color: #fff;
             background: linear-gradient(135deg, #34d399, #22c55e);
             box-shadow: 0 12px 24px rgba(34, 197, 94, .3);
         }
+        .tick svg { width: 48%; height: auto; }
 
-        h1 {
-            margin: 0 0 6px; font-size: clamp(1.25rem, 4.6vw, 1.6rem);
-            font-weight: 800; letter-spacing: -.01em;
-        }
-        .sub { margin: 0 0 20px; color: var(--muted); font-size: .86rem; font-weight: 600; }
+        h1 { margin: 0 0 6px; font-size: var(--fs-h1); font-weight: 800; letter-spacing: -.01em; line-height: 1.2; text-wrap: balance; }
+        .sub { margin: 0 auto clamp(16px, 3vw, 24px); max-width: 38ch; color: var(--muted); font-size: var(--fs-sm); font-weight: 600; line-height: 1.55; }
 
+        /* QR grows with the screen but never overflows the card */
         .qr-frame {
-            display: inline-block; padding: 12px; border-radius: 20px;
+            display: inline-block; padding: clamp(10px, 2.4vw, 14px); border-radius: 20px;
             background: #fff; border: 1px solid var(--line);
             box-shadow: 0 12px 28px rgba(17, 24, 39, .07);
+            max-width: 100%;
         }
-        .qr-frame img { display: block; width: clamp(150px, 46vw, 200px); height: auto; border-radius: 8px; }
+        .qr-frame img {
+            display: block; height: auto; border-radius: 8px;
+            width: clamp(160px, 52vw, 240px);
+            max-width: 100%;
+            image-rendering: pixelated;   /* keeps QR edges crisp when scaled */
+        }
 
         .scan-hint {
-            margin: 12px 0 20px; font-size: .76rem; font-weight: 700;
+            margin: 12px 0 clamp(16px, 3vw, 24px); font-size: var(--fs-xs); font-weight: 700;
             color: var(--brand); letter-spacing: .02em;
         }
 
         .btn {
-            display: block; text-decoration: none; text-align: center;
-            font-weight: 800; font-size: .9rem; border-radius: 14px;
-            padding: 14px 16px; transition: transform .18s, box-shadow .18s, background .18s;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 50px; text-decoration: none; text-align: center;
+            font-weight: 800; font-size: var(--fs-md); border-radius: 14px;
+            padding: 13px 16px; transition: transform .18s, box-shadow .18s, background .18s;
+            -webkit-tap-highlight-color: transparent;
         }
         .btn-primary {
             color: #fff;
             background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
             box-shadow: 0 16px 30px rgba(108, 99, 255, .30);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
+        .btn-primary:active { transform: scale(.98); }
         .btn-ghost {
             margin-top: 10px; color: var(--brand);
             border: 1.5px solid var(--brand); background: #fff;
         }
-        .btn-ghost:hover { background: #f3f2ff; }
+        .btn-ghost:active { background: #f3f2ff; }
 
-        .files { margin: 22px 0 0; text-align: left; }
+        .files { margin: clamp(18px, 3vw, 26px) 0 0; text-align: left; }
         .files h2 {
-            margin: 0 0 10px; font-size: .72rem; font-weight: 800;
+            margin: 0 0 10px; font-size: var(--fs-xs); font-weight: 800;
             letter-spacing: .08em; text-transform: uppercase; color: #9aa0ae;
         }
+        /* Many files scroll inside the list instead of stretching the page */
+        .file-list { max-height: min(40vh, 340px); overflow-y: auto; margin: 0 -4px; padding: 2px 4px; -webkit-overflow-scrolling: touch; }
         .file-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 9px 11px; border: 1px solid var(--line); border-radius: 13px;
+            display: flex; align-items: center; gap: clamp(8px, 2vw, 12px);
+            padding: clamp(9px, 2vw, 12px) clamp(10px, 2.4vw, 13px);
+            border: 1px solid var(--line); border-radius: 13px;
             margin-bottom: 8px; background: #fcfcff;
+            transition: border-color .18s, box-shadow .18s;
         }
+        .file-row:last-child { margin-bottom: 0; }
         .file-icon {
-            flex: 0 0 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+            flex: 0 0 clamp(30px, 6.5vw, 38px); width: clamp(30px, 6.5vw, 38px); aspect-ratio: 1;
+            border-radius: 10px; display: grid; place-items: center;
             background: rgba(240, 85, 155, .12); color: var(--accent);
-            font-size: .62rem; font-weight: 800;
+            font-size: clamp(.58rem, .54rem + .2vw, .68rem); font-weight: 800;
         }
         .file-name {
-            flex: 1; min-width: 0; font-size: .79rem; font-weight: 700;
+            flex: 1; min-width: 0; font-size: var(--fs-sm); font-weight: 700;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
         .file-link {
-            font-size: .7rem; font-weight: 800; color: var(--brand);
+            flex: 0 0 auto;
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 36px; padding: 6px 14px;
+            font-size: var(--fs-xs); font-weight: 800; color: var(--brand);
             text-decoration: none; border: 1.4px solid var(--brand);
-            padding: 5px 10px; border-radius: 9px; white-space: nowrap;
+            border-radius: 10px; white-space: nowrap;
+            -webkit-tap-highlight-color: transparent;
         }
-        .file-link:hover { background: var(--brand); color: #fff; }
+        .file-link:active { background: var(--brand); color: #fff; }
+
+        /* Hover effects only on real mouse devices (no sticky hover on phones) */
+        @media (hover: hover) {
+            .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
+            .btn-ghost:hover { background: #f3f2ff; }
+            .file-row:hover { border-color: #dcd9ff; box-shadow: 0 8px 20px rgba(17, 24, 39, .05); }
+            .file-link:hover { background: var(--brand); color: #fff; }
+        }
+
+        /* Very small phones: name on its own line, button full-width below */
+        @media (max-width: 380px) {
+            .file-row { flex-wrap: wrap; }
+            .file-name { flex: 1 1 calc(100% - 50px); }
+            .file-link { flex: 1 1 100%; }
+        }
+
+        /* Short landscape phones: let the page scroll naturally from the top */
+        @media (max-height: 560px) {
+            body { align-items: flex-start; }
+            .file-list { max-height: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="tick">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M4 12.5l5 5L20 6.5"/>
             </svg>
         </div>
@@ -138,13 +199,15 @@
         {% if uploaded_files %}
         <div class="files">
             <h2>{{ uploaded_files|length }} document{% if uploaded_files|length != 1 %}s{% endif %} included</h2>
+            <div class="file-list">
             {% for file in uploaded_files %}
-            <div class="file-row">
-                <div class="file-icon">{{ file.original.rsplit('.', 1)[-1][:4]|upper }}</div>
-                <div class="file-name" title="{{ file.original }}">{{ file.original }}</div>
-                <a href="{{ url_for('download_pdf', filename=file.saved) }}" class="file-link">Get</a>
-            </div>
+                <div class="file-row">
+                    <div class="file-icon">{{ file.original.rsplit('.', 1)[-1][:4]|upper }}</div>
+                    <div class="file-name" title="{{ file.original }}">{{ file.original }}</div>
+                    <a href="{{ url_for('download_pdf', filename=file.saved) }}" class="file-link">Get</a>
+                </div>
             {% endfor %}
+            </div>
         </div>
         {% endif %}
     </div>

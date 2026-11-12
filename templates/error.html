@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#6c63ff">
     <title>Something went wrong | QuickPDF QR</title>
     <meta name="robots" content="noindex, nofollow">
@@ -11,65 +11,106 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ===== Error page: responsive + premium ===== */
         :root {
             --ink: #12172b;
             --muted: #6b7280;
             --line: #ecebf5;
             --brand: #6c63ff;
             --brand-2: #22a7f0;
+
+            /* Fluid sizes: scale with the screen */
+            --pad: clamp(12px, 4vw, 40px);
+            --card-pad: clamp(20px, 5vw, 40px);
+            --fs-sm: clamp(.84rem, .8rem + .25vw, .96rem);
+            --fs-md: clamp(.92rem, .88rem + .3vw, 1.04rem);
+            --fs-h1: clamp(1.25rem, 1.05rem + 1.8vw, 1.8rem);
         }
         * { box-sizing: border-box; }
-        html, body { margin: 0; min-height: 100%; }
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        html, body { margin: 0; }
 
         body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             color: var(--ink);
             background: #fbfaff;
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex; align-items: center; justify-content: center;
-            padding: clamp(14px, 4vw, 40px);
+            padding:
+                max(var(--pad), env(safe-area-inset-top))
+                max(var(--pad), env(safe-area-inset-right))
+                max(var(--pad), env(safe-area-inset-bottom))
+                max(var(--pad), env(safe-area-inset-left));
             position: relative; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         body::before, body::after {
             content: ""; position: fixed; z-index: -1; border-radius: 50%;
-            filter: blur(90px); opacity: .55;
+            filter: blur(90px); opacity: .55; pointer-events: none;
         }
-        body::before { width: 420px; height: 420px; top: -150px; left: -110px; background: #ffe0ec; }
-        body::after { width: 480px; height: 480px; bottom: -190px; right: -130px; background: #cdeeff; }
+        body::before { width: min(420px, 80vw); aspect-ratio: 1; top: -150px; left: -110px; background: #ffe0ec; }
+        body::after { width: min(480px, 90vw); aspect-ratio: 1; bottom: -190px; right: -130px; background: #cdeeff; }
 
         .card {
-            width: 100%; max-width: 430px; text-align: center;
-            background: #fff; border: 1px solid var(--line); border-radius: 28px;
-            padding: clamp(24px, 5vw, 38px);
+            width: 100%;
+            max-width: clamp(320px, 92vw, 480px);
+            text-align: center;
+            background: #fff; border: 1px solid var(--line); border-radius: clamp(20px, 4vw, 28px);
+            padding: var(--card-pad);
             box-shadow: 0 24px 60px rgba(17, 24, 39, .10);
             animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
         }
         @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 
         .icon {
-            width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 18px;
+            width: clamp(52px, 11vw, 64px); aspect-ratio: 1;
+            margin: 0 auto 16px; border-radius: 18px;
             display: grid; place-items: center; color: #fff;
             background: linear-gradient(135deg, #f0559b, #ff8a5c);
             box-shadow: 0 14px 28px rgba(240, 85, 155, .28);
         }
+        .icon svg { width: 46%; height: auto; }
 
-        h1 { margin: 0 0 8px; font-size: clamp(1.2rem, 4.6vw, 1.5rem); font-weight: 800; letter-spacing: -.01em; }
-        p { margin: 0 0 22px; color: var(--muted); font-size: .88rem; font-weight: 600; line-height: 1.6; }
+        h1 { margin: 0 0 8px; font-size: var(--fs-h1); font-weight: 800; letter-spacing: -.01em; line-height: 1.25; text-wrap: balance; }
+        p {
+            margin: 0 auto clamp(18px, 3vw, 26px); max-width: 40ch;
+            color: var(--muted); font-size: var(--fs-sm); font-weight: 600; line-height: 1.6;
+            overflow-wrap: anywhere;   /* long error text never breaks the layout */
+        }
 
         .btn {
-            display: block; text-decoration: none; text-align: center;
-            color: #fff; font-weight: 800; font-size: .9rem;
-            padding: 14px 16px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 52px; text-decoration: none; text-align: center;
+            color: #fff; font-weight: 800; font-size: var(--fs-md);
+            padding: 13px 16px; border-radius: 14px;
             background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
             box-shadow: 0 16px 30px rgba(108, 99, 255, .30);
             transition: transform .18s, box-shadow .18s;
+            -webkit-tap-highlight-color: transparent;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
+        .btn:active { transform: scale(.98); }
+        .btn:focus-visible { outline: 3px solid rgba(108, 99, 255, .45); outline-offset: 3px; }
+
+        /* Hover lift only on real mouse devices (no sticky hover on phones) */
+        @media (hover: hover) {
+            .btn:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
+        }
+
+        /* Short landscape phones: let the page scroll naturally from the top */
+        @media (max-height: 520px) {
+            body { align-items: flex-start; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
+    <div class="card" role="alert">
         <div class="icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M12 8v5"/><path d="M12 16.5h.01"/><circle cx="12" cy="12" r="9"/>
             </svg>
         </div>
