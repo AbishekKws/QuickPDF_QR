@@ -236,10 +236,25 @@
         }
         .drop:hover .pick { background: var(--brand); color: #fff; }
 
-        .picked {
-            min-height: 18px; margin: 11px 0 0;
-            font-size: .76rem; font-weight: 800; color: var(--brand); text-align: center;
+        .selection {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+            gap: 8px; min-height: 18px; margin: 11px 0 0;
         }
+        .picked {
+            margin: 0; max-width: 100%;
+            font-size: .76rem; font-weight: 800; color: var(--brand); text-align: center;
+            overflow-wrap: anywhere;
+        }
+        .clear {
+            border: 0; background: transparent; cursor: pointer; padding: 2px 4px;
+            font-size: .72rem; font-weight: 800; color: var(--brand); text-decoration: underline;
+        }
+        .clear:hover { color: var(--ink); }
+        .warn {
+            margin: 8px 0 0; text-align: center;
+            font-size: .76rem; font-weight: 800; color: #e11d48; line-height: 1.5;
+        }
+        .submit:disabled { cursor: progress; opacity: .7; transform: none; box-shadow: none; }
 
         /* ---------- chips (conversion type) ---------- */
         .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin: 0 0 14px; }
@@ -424,7 +439,8 @@
 
             <div class="panel is-active" id="panel-upload" role="tabpanel" aria-labelledby="tab-upload">
                 <p class="panel-lead">Pick one PDF or a whole batch. You get a QR code plus a download page where each file — or the complete ZIP — can be taken.</p>
-                <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data" class="tool-form">
+                <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data"
+                      class="tool-form" data-busy="Uploading…">
                     <label class="drop" for="pdf_files">
                         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/>
@@ -435,7 +451,11 @@
                         <span class="pick">Choose PDF files</span>
                         <input type="file" name="pdf_files" id="pdf_files" accept=".pdf,application/pdf" multiple required>
                     </label>
-                    <div class="picked"></div>
+                    <div class="selection">
+                        <p class="picked" aria-live="polite"></p>
+                        <button type="button" class="clear" hidden>Clear</button>
+                    </div>
+                    <div class="warn" aria-live="assertive" hidden></div>
                     <button type="submit" class="submit">Upload &amp; generate QR →</button>
                     <p class="fineprint">4 MB total · files auto-delete after 30 minutes</p>
                 </form>
@@ -443,7 +463,8 @@
 
             <div class="panel" id="panel-topdf" role="tabpanel" aria-labelledby="tab-topdf" hidden>
                 <p class="panel-lead">Images, spreadsheets or plain text — we build the PDF, then share it with a QR exactly like above.</p>
-                <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data" class="tool-form">
+                <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data"
+                      class="tool-form" data-busy="Converting…" data-multi-when="image">
                     <div class="chips" role="radiogroup" aria-label="What are you converting?">
                         <label class="chip"><input type="radio" name="mode" value="image" checked><span>Image</span></label>
                         <label class="chip"><input type="radio" name="mode" value="sheet"><span>Excel / CSV</span></label>
@@ -460,7 +481,11 @@
                         <input type="file" name="files" id="topdf_files" multiple required
                                accept="image/*,.csv,.xlsx,.xlsm,.txt,.md">
                     </label>
-                    <div class="picked"></div>
+                    <div class="selection">
+                        <p class="picked" aria-live="polite"></p>
+                        <button type="button" class="clear" hidden>Clear</button>
+                    </div>
+                    <div class="warn" aria-live="assertive" hidden></div>
                     <button type="submit" class="submit">Convert &amp; get QR →</button>
                     <p class="fineprint">JPG · PNG · WebP · XLSX · CSV · TXT</p>
                 </form>
@@ -468,7 +493,8 @@
 
             <div class="panel" id="panel-frompdf" role="tabpanel" aria-labelledby="tab-frompdf" hidden>
                 <p class="panel-lead">The reverse direction: one JPG per page, or the text pulled into a TXT, Word or Excel file — shared with a QR just the same.</p>
-                <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data" class="tool-form">
+                <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data"
+                      class="tool-form" data-busy="Converting…">
                     <div class="chips" role="radiogroup" aria-label="What do you want to get?">
                         <label class="chip"><input type="radio" name="mode" value="images" checked><span>Images</span></label>
                         <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
@@ -485,7 +511,11 @@
                         <span class="pick">Choose a PDF</span>
                         <input type="file" name="files" id="frompdf_files" accept=".pdf,application/pdf" required>
                     </label>
-                    <div class="picked"></div>
+                    <div class="selection">
+                        <p class="picked" aria-live="polite"></p>
+                        <button type="button" class="clear" hidden>Clear</button>
+                    </div>
+                    <div class="warn" aria-live="assertive" hidden></div>
                     <button type="submit" class="submit">Reverse &amp; get QR →</button>
                     <p class="fineprint">JPG pages · TXT · DOCX · XLSX · up to 20 pages</p>
                 </form>
@@ -746,32 +776,124 @@
                 link.addEventListener('click', () => activate(link.dataset.tabTarget));
             });
 
+            const LIMIT_MB = {{ config.MAX_CONTENT_LENGTH // 1048576 }};
+            const LIMIT_BYTES = LIMIT_MB * 1024 * 1024;
+
+            function humanSize(bytes) {
+                const mb = bytes / 1048576;
+                return mb >= 0.1
+                    ? mb.toFixed(2) + ' MB'
+                    : Math.max(1, Math.round(bytes / 1024)) + ' KB';
+            }
+
+            function matchesAccept(file, accept) {
+                if (!accept) return true;
+                const name = (file.name || '').toLowerCase();
+                const type = (file.type || '').toLowerCase();
+                return accept.split(',').some(rawRule => {
+                    const rule = rawRule.trim().toLowerCase();
+                    if (!rule) return false;
+                    if (rule.charAt(0) === '.') return name.endsWith(rule);
+                    if (rule.slice(-2) === '/*') return type.indexOf(rule.slice(0, -1)) === 0;
+                    return type === rule;
+                });
+            }
+
             document.querySelectorAll('form.tool-form').forEach(form => {
                 const input = form.querySelector('input[type="file"]');
-                const output = form.querySelector('.picked');
+                if (!input) return;
+
+                const picked = form.querySelector('.picked');
+                const clear = form.querySelector('.clear');
+                const warn = form.querySelector('.warn');
+                const submit = form.querySelector('.submit');
                 const drop = form.querySelector('.drop');
-                if (!input || !output) return;
+                const modes = Array.from(form.querySelectorAll('input[name="mode"]'));
+                const busyLabel = form.dataset.busy || 'Working…';
+                let busy = false;
+
+                function check(files) {
+                    if (!files.length) return { ok: true, message: '' };
+                    const bad = files.find(file => !matchesAccept(file, input.accept));
+                    if (bad) {
+                        return { ok: false, message: '“' + bad.name + '” can’t be used here — check the formats listed below.' };
+                    }
+                    const total = files.reduce((sum, file) => sum + file.size, 0);
+                    if (total > LIMIT_BYTES) {
+                        return { ok: false, message: 'That is ' + humanSize(total) + ' — the limit is ' + LIMIT_MB + ' MB per upload.' };
+                    }
+                    return { ok: true, message: '' };
+                }
 
                 function render() {
+                    if (busy) return;
                     const files = Array.from(input.files || []);
-                    if (!files.length) { output.textContent = ''; return; }
-                    const mb = (files.reduce((sum, file) => sum + file.size, 0) / 1048576).toFixed(2);
-                    output.textContent = files.length + (files.length === 1 ? ' file selected' : ' files selected') + ' · ' + mb + ' MB';
+                    const result = check(files);
+
+                    if (picked) {
+                        if (!files.length) {
+                            picked.textContent = '';
+                        } else {
+                            const names = files.slice(0, 3).map(file => file.name).join(', ');
+                            const more = files.length > 3 ? ' +' + (files.length - 3) + ' more' : '';
+                            const total = files.reduce((sum, file) => sum + file.size, 0);
+                            picked.textContent = names + more + ' · ' + humanSize(total);
+                        }
+                    }
+                    if (clear) clear.hidden = files.length === 0;
+                    if (warn) {
+                        warn.textContent = result.message;
+                        warn.hidden = result.ok;
+                    }
+                    if (submit) submit.disabled = files.length > 0 && !result.ok;
                 }
 
                 input.addEventListener('change', render);
 
-                if (!drop) return;
-                ['dragenter', 'dragover'].forEach(type =>
-                    drop.addEventListener(type, event => { event.preventDefault(); drop.classList.add('is-active'); }));
-                ['dragleave', 'drop'].forEach(type =>
-                    drop.addEventListener(type, event => { event.preventDefault(); drop.classList.remove('is-active'); }));
-                drop.addEventListener('drop', event => {
-                    if (event.dataTransfer && event.dataTransfer.files.length) {
-                        input.files = event.dataTransfer.files;
+                if (clear) {
+                    clear.addEventListener('click', () => { input.value = ''; render(); });
+                }
+
+                modes.forEach(radio => radio.addEventListener('change', () => {
+                    const current = (modes.find(item => item.checked) || {}).value;
+                    const allowMultiple = form.dataset.multiWhen
+                        ? current === form.dataset.multiWhen
+                        : false;
+                    if (input.multiple !== allowMultiple) {
+                        input.multiple = allowMultiple;
+                        input.value = '';
                         render();
                     }
+                }));
+
+                if (drop) {
+                    ['dragenter', 'dragover'].forEach(type =>
+                        drop.addEventListener(type, event => { event.preventDefault(); drop.classList.add('is-active'); }));
+                    ['dragleave', 'drop'].forEach(type =>
+                        drop.addEventListener(type, event => { event.preventDefault(); drop.classList.remove('is-active'); }));
+                    drop.addEventListener('drop', event => {
+                        if (event.dataTransfer && event.dataTransfer.files.length) {
+                            input.files = event.dataTransfer.files;
+                            render();
+                        }
+                    });
+                }
+
+                form.addEventListener('submit', event => {
+                    const result = check(Array.from(input.files || []));
+                    if (!result.ok) {
+                        event.preventDefault();
+                        render();
+                        return;
+                    }
+                    busy = true;
+                    if (submit) {
+                        submit.disabled = true;
+                        submit.textContent = busyLabel;
+                    }
                 });
+
+                render();
             });
         })();
     </script>
