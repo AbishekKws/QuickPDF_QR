@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for
 import base64
 import qrcode
 import os
+import re
 import tempfile
 import time
 import uuid
@@ -144,13 +145,15 @@ def index():
                         )
 
                 zip_url = url_for("download_zip", filename=zip_stored, _external=True)
+                share_url = url_for("download_page", batch_id=batch_id, _external=True)
                 qr_name = f"{batch_id}.png"
-                qrcode.make(zip_url).save(os.path.join(QR_FOLDER, qr_name))
+                qrcode.make(share_url).save(os.path.join(QR_FOLDER, qr_name))
 
                 return render_template(
                     "qr.html",
                     qr_image=url_for("qr_image", filename=qr_name),
                     zip_url=zip_url,
+                    share_url=share_url,
                     uploaded_files=[
                         {"original": item["original"], "saved": item["stored"]}
                         for item in uploads
@@ -171,6 +174,41 @@ def upload_too_large(error):
 @app.route("/qr/<path:filename>")
 def qr_image(filename):
     return send_from_directory(QR_FOLDER, filename)
+
+
+@app.route("/d/<batch_id>")
+def download_page(batch_id):
+    """Page opened by a QR scan: pick one file or the whole bundle."""
+    if not re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", batch_id):
+        return render_template("error.html", message="This download link is not valid."), 404
+
+    prefix = batch_id + "__"
+    files = []
+    bundles = []
+
+    try:
+        for name in sorted(os.listdir(UPLOAD_FOLDER)):
+            if name.startswith(prefix) and os.path.isfile(os.path.join(UPLOAD_FOLDER, name)):
+                files.append({"stored": name, "original": _download_name(name)})
+    except OSError:
+        pass
+
+    try:
+        bundles = [name for name in os.listdir(ZIP_FOLDER) if name.startswith(prefix)]
+    except OSError:
+        pass
+
+    if not files:
+        return render_template(
+            "error.html",
+            message="This link has expired. Files are removed shortly after upload.",
+        ), 404
+
+    return render_template(
+        "download.html",
+        files=files,
+        zip_name=bundles[0] if bundles else None,
+    )
 
 
 @app.route("/uploads/zips/<path:filename>")
