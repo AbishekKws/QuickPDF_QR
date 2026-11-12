@@ -33,228 +33,400 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #12172b;
-            --muted: #6b7280;
-            --line: #ecebf5;
+            --ink: #0f1222;
+            --ink-soft: #3e4459;
+            --muted: #737b91;
+            --line: rgba(17, 24, 39, .08);
+            --line-strong: rgba(17, 24, 39, .14);
             --brand: #6c63ff;
             --brand-2: #22a7f0;
             --accent: #f0559b;
+            --ok: #22c55e;
+            --surface: #ffffff;
+            --bg: #f7f6ff;
+            --radius-lg: 30px;
+            --radius-md: 20px;
+            --radius-sm: 14px;
+            --shadow-lg: 0 34px 80px -34px rgba(31, 25, 94, .38);
+            --shadow-md: 0 20px 44px -26px rgba(31, 25, 94, .38);
+            --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
         }
+
         * { box-sizing: border-box; }
+        html { -webkit-text-size-adjust: 100%; }
         html, body { margin: 0; min-height: 100%; }
 
         body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-family: var(--font);
             color: var(--ink);
-            background: #fbfaff;
-            display: flex;
-            justify-content: center;
-            padding: clamp(16px, 4vw, 48px) clamp(14px, 4vw, 32px);
-            position: relative;
+            background:
+                radial-gradient(900px 480px at 12% -8%, #e2ddff 0%, rgba(226, 221, 255, 0) 62%),
+                radial-gradient(820px 460px at 96% 4%, #d5efff 0%, rgba(213, 239, 255, 0) 60%),
+                radial-gradient(700px 420px at 50% 108%, #ffe1ef 0%, rgba(255, 225, 239, 0) 62%),
+                var(--bg);
+            line-height: 1.5;
             overflow-x: hidden;
         }
-        body::before, body::after {
-            content: "";
-            position: fixed;
-            z-index: -1;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: 0.55;
+
+        a { color: inherit; }
+        img { display: block; max-width: 100%; }
+        button { font: inherit; }
+
+        .shell { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
+
+        /* ---------- top bar ---------- */
+        .topbar {
+            position: sticky; top: 0; z-index: 40;
+            backdrop-filter: saturate(150%) blur(14px);
+            -webkit-backdrop-filter: saturate(150%) blur(14px);
+            background: rgba(252, 251, 255, .78);
+            border-bottom: 1px solid var(--line);
         }
-        body::before { width: 460px; height: 460px; top: -140px; left: -120px; background: #d9d4ff; }
-        body::after { width: 520px; height: 520px; bottom: -200px; right: -140px; background: #cdeeff; }
+        .topbar-inner {
+            display: flex; align-items: center; gap: 18px;
+            min-height: 66px;
+        }
+        .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; }
+        .mark {
+            width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center;
+            background: linear-gradient(140deg, var(--brand), var(--brand-2));
+            box-shadow: 0 10px 22px -10px rgba(108, 99, 255, .9);
+            color: #fff;
+        }
+        .brand-name { font-weight: 800; font-size: .98rem; letter-spacing: -.01em; }
+        .brand-name em { font-style: normal; color: var(--brand); }
 
-        .shell { width: 100%; max-width: 1040px; }
+        .nav { display: none; gap: 4px; margin-left: auto; }
+        .nav a {
+            text-decoration: none; font-size: .82rem; font-weight: 700; color: var(--ink-soft);
+            padding: 8px 12px; border-radius: 10px; transition: background .18s, color .18s;
+        }
+        .nav a:hover { background: rgba(108, 99, 255, .09); color: var(--brand); }
 
-        header.hero { text-align: center; margin-bottom: clamp(22px, 4vw, 40px); }
-        .badge {
+        .pill {
+            margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
+            background: #fff; border: 1px solid var(--line); border-radius: 999px;
+            padding: 7px 13px; font-size: .71rem; font-weight: 800; color: var(--ink-soft);
+            letter-spacing: .02em; box-shadow: 0 6px 16px -12px rgba(17, 24, 39, .5);
+        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(34, 197, 94, .14); }
+
+        /* ---------- hero ---------- */
+        .hero { padding: clamp(34px, 6vw, 68px) 0 clamp(22px, 3.4vw, 34px); text-align: center; }
+        .eyebrow {
             display: inline-flex; align-items: center; gap: 8px;
-            background: #fff; border: 1px solid var(--line);
-            color: var(--brand); font-size: 12px; font-weight: 700; letter-spacing: .04em;
-            padding: 7px 14px; border-radius: 999px; text-transform: uppercase;
-            box-shadow: 0 6px 18px rgba(17, 24, 39, .05);
+            font-size: .68rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+            color: var(--brand);
+            background: rgba(108, 99, 255, .09);
+            border: 1px solid rgba(108, 99, 255, .16);
+            padding: 7px 14px; border-radius: 999px;
         }
-        .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
         h1 {
-            font-size: clamp(1.9rem, 5.4vw, 3rem);
-            font-weight: 800; letter-spacing: -.02em; line-height: 1.1;
-            margin: 16px 0 10px;
+            font-size: clamp(2.05rem, 5.6vw, 3.5rem);
+            font-weight: 800; letter-spacing: -.035em; line-height: 1.06;
+            margin: 20px auto 16px; max-width: 15ch;
         }
-        h1 span {
-            background: linear-gradient(100deg, var(--brand) 0%, var(--brand-2) 55%, var(--accent) 100%);
+        h1 .grad {
+            background: linear-gradient(100deg, var(--brand) 0%, var(--brand-2) 52%, var(--accent) 100%);
             -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .hero p { margin: 0 auto; max-width: 520px; color: var(--muted); font-size: clamp(.92rem, 2.4vw, 1.02rem); font-weight: 500; }
-
-        .grid { display: grid; gap: clamp(16px, 2.5vw, 26px); grid-template-columns: 1fr; }
-        @media (min-width: 880px) { .grid { grid-template-columns: 1.05fr 1fr; align-items: stretch; } }
-
-        .card {
-            background: #fff;
-            border: 1px solid var(--line);
-            border-radius: 26px;
-            padding: clamp(20px, 3vw, 32px);
-            box-shadow: 0 20px 50px rgba(17, 24, 39, .07);
+        .lede {
+            margin: 0 auto; max-width: 60ch; color: var(--muted);
+            font-size: clamp(.92rem, 2.3vw, 1.03rem); font-weight: 500;
         }
 
-        .card h2 { margin: 0 0 18px; font-size: 1.06rem; font-weight: 800; letter-spacing: -.01em; }
+        .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 26px 0 0; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+            text-decoration: none; font-weight: 800; font-size: .88rem;
+            padding: 13px 22px; border-radius: 14px; border: 1.5px solid transparent;
+            transition: transform .18s, box-shadow .18s, background .18s, border-color .18s;
+        }
+        .btn-primary {
+            color: #fff;
+            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
+            box-shadow: 0 18px 34px -16px rgba(108, 99, 255, .85);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 24px 40px -16px rgba(108, 99, 255, .9); }
+        .btn-ghost { color: var(--brand); background: #fff; border-color: rgba(108, 99, 255, .3); }
+        .btn-ghost:hover { background: rgba(108, 99, 255, .06); transform: translateY(-2px); }
 
-        .step { display: flex; gap: 14px; padding: 13px 0; border-bottom: 1px dashed var(--line); }
-        .step:last-child { border-bottom: 0; padding-bottom: 0; }
-        .step-num {
-            flex: 0 0 34px; height: 34px; border-radius: 11px;
-            display: grid; place-items: center;
-            font-weight: 800; font-size: .82rem; color: #fff;
+        .hero-chips {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+            margin: 22px 0 0; padding: 0; list-style: none;
+        }
+        .hero-chips li {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: .73rem; font-weight: 700; color: var(--ink-soft);
+            background: rgba(255, 255, 255, .8); border: 1px solid var(--line);
+            padding: 7px 12px; border-radius: 999px;
+        }
+        .hero-chips li::before {
+            content: ""; width: 6px; height: 6px; border-radius: 50%;
             background: linear-gradient(140deg, var(--brand), var(--brand-2));
-            box-shadow: 0 8px 18px rgba(108, 99, 255, .28);
         }
-        .step h3 { margin: 0 0 3px; font-size: .9rem; font-weight: 700; }
-        .step p { margin: 0; font-size: .82rem; color: var(--muted); line-height: 1.5; }
 
-        .upload { display: flex; flex-direction: column; }
-        .drop {
+        /* ---------- tool panel ---------- */
+        .tools {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: clamp(16px, 2.4vw, 26px);
             position: relative;
-            display: block;
-            border: 2px dashed #d6d3ff;
-            background: linear-gradient(180deg, #faf9ff, #f5f4ff);
-            border-radius: 20px;
-            padding: clamp(22px, 4vw, 34px) 18px;
-            text-align: center;
-            transition: border-color .2s, background .2s;
         }
-        .drop:hover, .drop.is-active { border-color: var(--brand); background: #f3f2ff; }
-        .drop svg { display: block; margin: 0 auto; color: var(--brand); }
-        .drop strong { display: block; margin: 12px 0 4px; font-size: .95rem; font-weight: 800; }
-        .drop small { display: block; color: var(--muted); font-size: .78rem; font-weight: 600; line-height: 1.5; }
-        .drop input[type="file"] {
-            position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;
+        .tools::after {
+            content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9);
         }
+
+        .tabbar {
+            display: flex; gap: 4px; flex-wrap: nowrap;
+            overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+            background: #f4f3ff; border: 1px solid var(--line);
+            padding: 5px; border-radius: 999px;
+        }
+        .tabbar::-webkit-scrollbar { display: none; }
+        .tab {
+            flex: 1 1 auto; min-width: 0;
+            border: 0; background: transparent; cursor: pointer;
+            padding: 10px 12px; border-radius: 999px;
+            font-size: .78rem; font-weight: 800; letter-spacing: -.005em; color: var(--ink-soft);
+            white-space: nowrap; transition: background .2s, color .2s, box-shadow .2s;
+        }
+        @media (min-width: 640px) {
+            .tab { padding: 10px 18px; font-size: .8rem; }
+        }
+        .tab:hover { color: var(--brand); }
+        .tab[aria-selected="true"] {
+            background: #fff; color: var(--brand);
+            box-shadow: 0 8px 20px -12px rgba(31, 25, 94, .5);
+        }
+
+        .panel { display: none; padding-top: clamp(16px, 2.2vw, 22px); }
+        .panel.is-active { display: block; animation: fade .25s ease both; }
+        @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+        .panel-lead {
+            margin: 0 0 16px; color: var(--muted); font-size: .86rem; font-weight: 600;
+            max-width: 68ch; line-height: 1.6;
+        }
+
+        /* ---------- drop zone ---------- */
+        .drop {
+            position: relative; display: grid; place-items: center; gap: 2px;
+            border: 2px dashed #d9d6ff;
+            background: linear-gradient(180deg, #fbfaff, #f5f4ff);
+            border-radius: 22px;
+            padding: clamp(24px, 4vw, 38px) 20px;
+            text-align: center; cursor: pointer;
+            transition: border-color .2s, background .2s, transform .2s;
+        }
+        .drop:hover, .drop.is-active { border-color: var(--brand); background: #f2f1ff; transform: translateY(-1px); }
+        .drop:focus-within { border-color: var(--brand); box-shadow: 0 0 0 4px rgba(108, 99, 255, .16); }
+        .drop svg { color: var(--brand); }
+        .drop strong { display: block; margin: 12px 0 3px; font-size: .95rem; font-weight: 800; letter-spacing: -.01em; }
+        .drop small { display: block; color: var(--muted); font-size: .78rem; font-weight: 600; }
+        .drop input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
         .pick {
-            display: inline-block; margin-top: 14px; cursor: pointer;
+            display: inline-block; margin-top: 14px;
             background: #fff; border: 1.5px solid var(--brand); color: var(--brand);
-            font-weight: 700; font-size: .82rem; padding: 9px 18px; border-radius: 11px;
+            font-weight: 800; font-size: .8rem; padding: 9px 18px; border-radius: 11px;
             transition: background .18s, color .18s;
         }
-        .pick:hover { background: var(--brand); color: #fff; }
+        .drop:hover .pick { background: var(--brand); color: #fff; }
 
         .picked {
-            margin-top: 12px; min-height: 20px;
-            font-size: .78rem; font-weight: 700; color: var(--brand);
-            text-align: center;
+            min-height: 18px; margin: 11px 0 0;
+            font-size: .76rem; font-weight: 800; color: var(--brand); text-align: center;
         }
 
-        .submit {
-            margin-top: 16px; width: 100%; border: 0; cursor: pointer;
-            padding: 15px 18px; border-radius: 15px;
-            font-family: inherit; font-size: .95rem; font-weight: 800; color: #fff;
-            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
-            box-shadow: 0 16px 30px rgba(108, 99, 255, .32);
-            transition: transform .18s, box-shadow .18s;
-        }
-        .submit:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .38); }
-        .submit:active { transform: translateY(0); }
-
-        .trust {
-            margin-top: 16px; display: flex; align-items: center; justify-content: center;
-            gap: 7px; color: var(--muted); font-size: .74rem; font-weight: 700;
-        }
-
-        .convert { margin-top: clamp(16px, 2.5vw, 26px); }
-        .convert p.lead { margin: -8px 0 16px; color: var(--muted); font-size: .85rem; font-weight: 600; line-height: 1.55; }
-
-        .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(138px, 1fr)); gap: 8px; margin-bottom: 14px; }
-        .mode { position: relative; }
-        .mode input { position: absolute; opacity: 0; pointer-events: none; }
-        .mode span {
-            display: block; text-align: center; cursor: pointer;
-            border: 1.5px solid var(--line); border-radius: 12px; background: #fff;
-            padding: 10px 8px; font-size: .78rem; font-weight: 800; color: #4b5563;
+        /* ---------- chips (conversion type) ---------- */
+        .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin: 0 0 14px; }
+        .chip { position: relative; }
+        .chip input { position: absolute; opacity: 0; pointer-events: none; }
+        .chip span {
+            display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%;
+            border: 1.5px solid var(--line-strong); background: #fff; color: var(--ink-soft);
+            border-radius: 999px; padding: 9px 12px; cursor: pointer;
+            font-size: .76rem; font-weight: 800; white-space: nowrap;
             transition: border-color .18s, color .18s, background .18s, box-shadow .18s;
         }
-        .mode input:checked + span {
-            border-color: var(--brand); color: var(--brand); background: #f3f2ff;
-            box-shadow: 0 8px 18px rgba(108, 99, 255, .15);
+        .chip span::before {
+            content: ""; width: 9px; height: 9px; border-radius: 50%;
+            border: 1.6px solid #c4c9d8; transition: border-color .18s, background .18s;
         }
-        .mode input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
-
-        .conv-input {
-            width: 100%; border: 2px dashed #d6d3ff; background: #faf9ff; border-radius: 14px;
-            padding: 14px; font-family: inherit; font-size: .8rem; font-weight: 600; color: var(--muted);
+        .chip input:checked + span {
+            border-color: var(--brand); color: var(--brand); background: #f4f3ff;
+            box-shadow: 0 10px 22px -16px rgba(108, 99, 255, .9);
         }
-        .conv-input::file-selector-button {
-            font-family: inherit; font-weight: 800; font-size: .78rem; color: var(--brand);
-            background: #fff; border: 1.5px solid var(--brand); border-radius: 10px;
-            padding: 8px 14px; margin-right: 12px; cursor: pointer;
+        .chip input:checked + span::before { border-color: var(--brand); background: var(--brand); }
+        .chip input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+        .submit {
+            margin-top: 14px; width: 100%; border: 0; cursor: pointer;
+            padding: 15px 18px; border-radius: 15px;
+            font-family: var(--font); font-size: .92rem; font-weight: 800; color: #fff;
+            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
+            box-shadow: 0 18px 34px -18px rgba(108, 99, 255, .95);
+            transition: transform .18s, box-shadow .18s, filter .18s;
+        }
+        .submit:hover { transform: translateY(-2px); box-shadow: 0 24px 40px -18px rgba(108, 99, 255, 1); }
+        .submit:active { transform: translateY(0); filter: saturate(115%); }
+
+        .fineprint {
+            margin: 12px 0 0; text-align: center;
+            font-size: .72rem; font-weight: 700; color: #99a0b3;
         }
 
-        footer.note { text-align: center; color: #9aa0ae; font-size: .74rem; font-weight: 600; margin-top: 22px; }
+        /* ---------- sections ---------- */
+        section[id] { scroll-margin-top: 92px; }
 
-        .info { margin-top: clamp(16px, 2.5vw, 26px); }
-        .feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 13px; }
-        @media (min-width: 720px) { .feat { grid-template-columns: 1fr 1fr; gap: 13px 26px; } }
-        .feat li { position: relative; padding-left: 26px; font-size: .84rem; font-weight: 600; color: var(--muted); line-height: 1.6; }
-        .feat li::before {
-            content: ""; position: absolute; left: 2px; top: .42em;
-            width: 11px; height: 6px;
-            border-left: 2.4px solid var(--brand); border-bottom: 2.4px solid var(--brand);
-            transform: rotate(-45deg); border-radius: 1px;
+        .section { padding: clamp(38px, 6vw, 64px) 0 0; }
+        .section-head { margin-bottom: 22px; }
+        .section-head .eyebrow { margin-bottom: 10px; }
+        h2 {
+            margin: 0; font-size: clamp(1.3rem, 3.3vw, 1.72rem);
+            font-weight: 800; letter-spacing: -.025em;
         }
-        .feat strong { color: var(--ink); font-weight: 800; }
 
+        .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+        @media (min-width: 780px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+        .step {
+            background: rgba(255, 255, 255, .78);
+            border: 1px solid var(--line); border-radius: var(--radius-md);
+            padding: 20px; display: flex; gap: 14px; align-items: flex-start;
+            box-shadow: var(--shadow-md);
+        }
+        .step-num {
+            flex: 0 0 34px; height: 34px; border-radius: 11px; display: grid; place-items: center;
+            font-size: .8rem; font-weight: 800; color: #fff;
+            background: linear-gradient(140deg, var(--brand), var(--brand-2));
+            box-shadow: 0 10px 20px -12px rgba(108, 99, 255, .95);
+        }
+        .step h3 { margin: 2px 0 4px; font-size: .9rem; font-weight: 800; letter-spacing: -.01em; }
+        .step p { margin: 0; font-size: .81rem; font-weight: 600; color: var(--muted); line-height: 1.55; }
+
+        .feat-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+        @media (min-width: 640px) { .feat-grid { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 1000px) { .feat-grid { grid-template-columns: repeat(3, 1fr); } }
+        .feat {
+            background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+            padding: 20px; box-shadow: var(--shadow-md);
+            transition: transform .2s, box-shadow .2s, border-color .2s;
+        }
+        .feat:hover { transform: translateY(-3px); border-color: rgba(108, 99, 255, .28); box-shadow: 0 26px 50px -28px rgba(31, 25, 94, .5); }
+        .feat-icon {
+            width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+            background: rgba(108, 99, 255, .1); color: var(--brand); margin-bottom: 13px;
+        }
+        .feat h3 { margin: 0 0 6px; font-size: .88rem; font-weight: 800; letter-spacing: -.01em; }
+        .feat p { margin: 0; font-size: .81rem; font-weight: 600; color: var(--muted); line-height: 1.6; }
+
+        .faq-list { max-width: 820px; }
         details {
-            border: 1px solid var(--line); border-radius: 14px;
-            padding: 12px 16px; margin-bottom: 10px; background: #fcfcff;
+            background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm);
+            padding: 14px 18px; margin-bottom: 10px;
+            box-shadow: 0 12px 26px -24px rgba(31, 25, 94, .55);
+            transition: border-color .18s, box-shadow .18s;
         }
-        details:last-of-type { margin-bottom: 0; }
+        details:hover { border-color: rgba(108, 99, 255, .28); }
+        details:last-child { margin-bottom: 0; }
+        details[open] { border-color: rgba(108, 99, 255, .3); box-shadow: var(--shadow-md); }
         details summary {
-            cursor: pointer; list-style: none; font-size: .86rem; font-weight: 800;
-            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            cursor: pointer; list-style: none;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            font-size: .87rem; font-weight: 800; letter-spacing: -.005em;
         }
         details summary::-webkit-details-marker { display: none; }
-        details summary::after { content: "+"; color: var(--brand); font-weight: 800; font-size: 1rem; }
+        details summary::after {
+            content: "+"; flex: 0 0 auto; width: 24px; height: 24px; border-radius: 8px;
+            display: grid; place-items: center; font-size: 1rem; font-weight: 800;
+            color: var(--brand); background: rgba(108, 99, 255, .1);
+        }
         details[open] summary::after { content: "–"; }
-        details p { margin: 10px 0 0; font-size: .82rem; font-weight: 600; color: var(--muted); line-height: 1.65; }
+        details p { margin: 10px 0 2px; font-size: .82rem; font-weight: 600; color: var(--muted); line-height: 1.7; }
+
+        /* ---------- footer ---------- */
+        footer.site {
+            margin: clamp(40px, 6vw, 64px) 0 0;
+            padding: 22px 0 clamp(26px, 4vw, 40px);
+            border-top: 1px solid var(--line);
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+        }
+        footer.site p { margin: 0; font-size: .74rem; font-weight: 700; color: #99a0b3; }
+        .foot-links { display: flex; gap: 16px; }
+        .foot-links a { font-size: .74rem; font-weight: 800; color: var(--ink-soft); text-decoration: none; }
+        .foot-links a:hover { color: var(--brand); }
+
+        @media (min-width: 760px) {
+            .nav { display: flex; }
+            .pill { margin-left: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+        }
     </style>
 </head>
 <body>
-    <div class="shell">
-        <header class="hero">
-            <span class="badge"><span class="dot"></span> PDF to QR</span>
-            <h1>PDF to QR code with <span>one quick scan</span></h1>
-            <p>Bundle your PDFs or convert images, Excel and text — then hand out a single QR code that opens a download page with every file and the whole ZIP.</p>
-        </header>
+    <header class="topbar">
+        <div class="shell topbar-inner">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="mark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <rect x="2" y="2" width="7" height="7" rx="1.6"/>
+                        <rect x="15" y="2" width="7" height="7" rx="1.6" opacity=".8"/>
+                        <rect x="2" y="15" width="7" height="7" rx="1.6" opacity=".8"/>
+                        <rect x="15" y="15" width="3" height="3" rx=".8"/>
+                        <rect x="19" y="15" width="3" height="3" rx=".8"/>
+                        <rect x="15" y="19" width="3" height="3" rx=".8"/>
+                        <rect x="19" y="19" width="3" height="3" rx=".8"/>
+                    </svg>
+                </span>
+                <span class="brand-name">QuickPDF <em>QR</em></span>
+            </a>
+            <nav class="nav" aria-label="Page sections">
+                <a href="#tools">Tools</a>
+                <a href="#how">How it works</a>
+                <a href="#features">Features</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+            <span class="pill"><span class="dot"></span>Free · no sign-up</span>
+        </div>
+    </header>
 
-        <div class="grid">
-            <section class="card">
-                <h2>How it works</h2>
-                <div class="step">
-                    <div class="step-num">1</div>
-                    <div>
-                        <h3>Batch upload</h3>
-                        <p>Pick one PDF or several at once — up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB in total.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-num">2</div>
-                    <div>
-                        <h3>Instant bundle</h3>
-                        <p>The files are packed into a ZIP and a QR code is generated right away.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-num">3</div>
-                    <div>
-                        <h3>Scan &amp; download</h3>
-                        <p>The scanner picks the exact file they need, or takes the whole bundle.</p>
-                    </div>
-                </div>
-            </section>
+    <main class="shell">
+        <section class="hero">
+            <span class="eyebrow">PDF · images · Office · text</span>
+            <h1>PDF to QR code <span class="grad">and back</span> — all on one page</h1>
+            <p class="lede">Upload a batch of PDFs and share them with one scan, turn photos, Excel or text into a PDF, or reverse a PDF into images, Word and Excel.</p>
+            <div class="cta-row">
+                <a class="btn btn-primary" href="#tools" data-tab-target="upload">Upload a PDF</a>
+                <a class="btn btn-ghost" href="#tools" data-tab-target="topdf">Convert a file</a>
+            </div>
+            <ul class="hero-chips">
+                <li>Up to 4 MB per batch</li>
+                <li>Nepali text ready</li>
+                <li>Auto-deleted in 30 minutes</li>
+            </ul>
+        </section>
 
-            <section class="card upload">
-                <h2>Ready to start?</h2>
-                <form action="" method="post" enctype="multipart/form-data" id="uploadForm">
-                    <label class="drop" id="dropZone" for="pdf_files">
-                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <section class="tools" id="tools">
+            <div class="tabbar" role="tablist" aria-label="Choose a tool">
+                <button class="tab" role="tab" id="tab-upload" data-tab="upload"
+                        aria-controls="panel-upload" aria-selected="true">PDF → QR</button>
+                <button class="tab" role="tab" id="tab-topdf" data-tab="topdf"
+                        aria-controls="panel-topdf" aria-selected="false">Anything → PDF</button>
+                <button class="tab" role="tab" id="tab-frompdf" data-tab="frompdf"
+                        aria-controls="panel-frompdf" aria-selected="false">PDF → anything</button>
+            </div>
+
+            <div class="panel is-active" id="panel-upload" role="tabpanel" aria-labelledby="tab-upload">
+                <p class="panel-lead">Pick one PDF or a whole batch. You get a QR code plus a download page where each file — or the complete ZIP — can be taken.</p>
+                <form action="{{ url_for('index') }}" method="post" enctype="multipart/form-data" class="tool-form">
+                    <label class="drop" for="pdf_files">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/>
                             <path d="M20 15v3a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-3"/>
                         </svg>
@@ -263,231 +435,345 @@
                         <span class="pick">Choose PDF files</span>
                         <input type="file" name="pdf_files" id="pdf_files" accept=".pdf,application/pdf" multiple required>
                     </label>
-
-                    <div class="picked" id="picked"></div>
-
-                    <button type="submit" class="submit">Upload &amp; generate QR &rarr;</button>
-
-                    <div class="trust">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                            <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-                        </svg>
-                        Files are private and cleared automatically
-                    </div>
+                    <div class="picked"></div>
+                    <button type="submit" class="submit">Upload &amp; generate QR →</button>
+                    <p class="fineprint">4 MB total · files auto-delete after 30 minutes</p>
                 </form>
-            </section>
-        </div>
+            </div>
 
-        <section class="card convert">
-            <h2>Convert anything to PDF</h2>
-            <p class="lead">Images, spreadsheets or plain text — we build the PDF, then share it with a QR exactly like above.</p>
-            <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data">
-                <div class="modes" role="radiogroup" aria-label="What are you converting?">
-                    <label class="mode">
-                        <input type="radio" name="mode" value="image" checked>
-                        <span>Image → PDF</span>
+            <div class="panel" id="panel-topdf" role="tabpanel" aria-labelledby="tab-topdf" hidden>
+                <p class="panel-lead">Images, spreadsheets or plain text — we build the PDF, then share it with a QR exactly like above.</p>
+                <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data" class="tool-form">
+                    <div class="chips" role="radiogroup" aria-label="What are you converting?">
+                        <label class="chip"><input type="radio" name="mode" value="image" checked><span>Image</span></label>
+                        <label class="chip"><input type="radio" name="mode" value="sheet"><span>Excel / CSV</span></label>
+                        <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
+                    </div>
+                    <label class="drop" for="topdf_files">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M14 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7l-4-4z"/>
+                            <path d="M14 3v4h4"/><path d="M9 13h6"/><path d="M9 17h4"/>
+                        </svg>
+                        <strong>Drop your files here</strong>
+                        <small>photos, spreadsheets or a text file</small>
+                        <span class="pick">Choose files</span>
+                        <input type="file" name="files" id="topdf_files" multiple required
+                               accept="image/*,.csv,.xlsx,.xlsm,.txt,.md">
                     </label>
-                    <label class="mode">
-                        <input type="radio" name="mode" value="sheet">
-                        <span>Excel / CSV → PDF</span>
+                    <div class="picked"></div>
+                    <button type="submit" class="submit">Convert &amp; get QR →</button>
+                    <p class="fineprint">JPG · PNG · WebP · XLSX · CSV · TXT</p>
+                </form>
+            </div>
+
+            <div class="panel" id="panel-frompdf" role="tabpanel" aria-labelledby="tab-frompdf" hidden>
+                <p class="panel-lead">The reverse direction: one JPG per page, or the text pulled into a TXT, Word or Excel file — shared with a QR just the same.</p>
+                <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data" class="tool-form">
+                    <div class="chips" role="radiogroup" aria-label="What do you want to get?">
+                        <label class="chip"><input type="radio" name="mode" value="images" checked><span>Images</span></label>
+                        <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
+                        <label class="chip"><input type="radio" name="mode" value="docx"><span>Word</span></label>
+                        <label class="chip"><input type="radio" name="mode" value="xlsx"><span>Excel</span></label>
+                    </div>
+                    <label class="drop" for="frompdf_files">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M7 3h7l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+                            <path d="M14 3v5h5"/><path d="M12 11v6"/><path d="M9.5 14.5 12 17l2.5-2.5"/>
+                        </svg>
+                        <strong>Drop a PDF here</strong>
+                        <small>we turn it into images, text, Word or Excel</small>
+                        <span class="pick">Choose a PDF</span>
+                        <input type="file" name="files" id="frompdf_files" accept=".pdf,application/pdf" required>
                     </label>
-                    <label class="mode">
-                        <input type="radio" name="mode" value="text">
-                        <span>Text → PDF</span>
-                    </label>
-                </div>
-
-                <input class="conv-input" type="file" name="files" id="convertFiles" required multiple
-                       accept="image/*,.csv,.xlsx,.xlsm,.txt,.md">
-
-                <button type="submit" class="submit">Convert &amp; get QR &rarr;</button>
-
-                <div class="trust">JPG · PNG · WebP · XLSX · CSV · TXT</div>
-            </form>
+                    <div class="picked"></div>
+                    <button type="submit" class="submit">Reverse &amp; get QR →</button>
+                    <p class="fineprint">JPG pages · TXT · DOCX · XLSX · up to 20 pages</p>
+                </form>
+            </div>
         </section>
 
-        <section class="card convert">
-            <h2>Convert a PDF into other formats</h2>
-            <p class="lead">The reverse direction: take each page out as an image, or pull the text into a text, Word or Excel file.</p>
-            <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data">
-                <div class="modes" role="radiogroup" aria-label="What do you want to get?">
-                    <label class="mode">
-                        <input type="radio" name="mode" value="images" checked>
-                        <span>PDF → Images</span>
-                    </label>
-                    <label class="mode">
-                        <input type="radio" name="mode" value="text">
-                        <span>PDF → Text</span>
-                    </label>
-                    <label class="mode">
-                        <input type="radio" name="mode" value="docx">
-                        <span>PDF → Word</span>
-                    </label>
-                    <label class="mode">
-                        <input type="radio" name="mode" value="xlsx">
-                        <span>PDF → Excel</span>
-                    </label>
-                </div>
-
-                <input class="conv-input" type="file" name="files" accept=".pdf,application/pdf" required>
-
-                <button type="submit" class="submit">Reverse &amp; get QR &rarr;</button>
-
-                <div class="trust">JPG pages · TXT · DOCX · XLSX</div>
-            </form>
+        <section class="section" id="how">
+            <div class="section-head">
+                <span class="eyebrow">Three steps</span>
+                <h2>From file to scan in seconds</h2>
+            </div>
+            <ol class="steps">
+                <li class="step">
+                    <span class="step-num">1</span>
+                    <div>
+                        <h3>Add your files</h3>
+                        <p>Drop PDFs, photos, a spreadsheet or a text file — up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB in one go.</p>
+                    </div>
+                </li>
+                <li class="step">
+                    <span class="step-num">2</span>
+                    <div>
+                        <h3>Get the QR</h3>
+                        <p>The bundle is packed, the PDF is built and a QR code appears instantly — ready to print or share.</p>
+                    </div>
+                </li>
+                <li class="step">
+                    <span class="step-num">3</span>
+                    <div>
+                        <h3>Scan &amp; download</h3>
+                        <p>Whoever scans picks the exact file they need, or takes everything as a single ZIP.</p>
+                    </div>
+                </li>
+            </ol>
         </section>
 
-        <section class="card info">
-            <h2>What you can do with QuickPDF QR</h2>
-            <ul class="feat">
-                <li><strong>PDF to QR code.</strong> Upload one or a batch of PDFs and get a scannable code in seconds — no account, no app install.</li>
-                <li><strong>One link, every file.</strong> The scanner opens a download page listing each PDF, with a single ZIP button for the whole batch.</li>
-                <li><strong>Image to PDF.</strong> Turn JPG, PNG or WebP photos into a tidy A4 PDF, one page per image, with EXIF rotation fixed.</li>
-                <li><strong>Excel, CSV and text to PDF.</strong> Spreadsheets become a readable table and notes become a clean document.</li>
-                <li><strong>PDF back to images, Word, Excel or text.</strong> Save every page as a JPG, or pull the content out as an editable DOCX, XLSX or TXT file.</li>
-                <li><strong>Original file names.</strong> Downloads keep the name you uploaded — no renamed or random files.</li>
-                <li><strong>Nepali text supported.</strong> Devanagari and Latin text both render correctly in generated PDFs.</li>
-            </ul>
+        <section class="section" id="features">
+            <div class="section-head">
+                <span class="eyebrow">Capabilities</span>
+                <h2>What you can do here</h2>
+            </div>
+            <div class="feat-grid">
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" opacity=".75"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1.5" opacity=".75"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                        </svg>
+                    </div>
+                    <h3>PDF to QR code</h3>
+                    <p>Upload one PDF or a batch and get a scannable code in seconds — no account, no app install.</p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/>
+                        </svg>
+                    </div>
+                    <h3>One link, every file</h3>
+                    <p>The download page lists each file separately, with a single ZIP button for the whole batch.</p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4 4 3 3-2 4 3"/>
+                        </svg>
+                    </div>
+                    <h3>Image to PDF</h3>
+                    <p>JPG, PNG or WebP photos become a tidy A4 PDF, one page per image, with EXIF rotation fixed.</p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/>
+                        </svg>
+                    </div>
+                    <h3>Excel, CSV and text to PDF</h3>
+                    <p>Spreadsheets turn into a readable table, and notes become a clean flowing document.</p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 8h16"/><path d="M4 16h16"/><path d="M12 4v16"/><path d="M8 12l4 4 4-4"/>
+                        </svg>
+                    </div>
+                    <h3>PDF back to images, Word, Excel</h3>
+                    <p>Save every page as a JPG, or pull the content out as an editable DOCX, XLSX or TXT file.</p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3l7 4v5c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V7l7-4z"/><path d="M9.5 12.5l1.8 1.8 3.4-3.6"/>
+                        </svg>
+                    </div>
+                    <h3>Private and temporary</h3>
+                    <p>Nothing is public or permanent: files keep their original names and are deleted automatically.</p>
+                </article>
+            </div>
         </section>
 
-        <section class="card info">
-            <h2>Frequently asked questions</h2>
-            <details>
-                <summary>How do I share a PDF with a QR code?</summary>
-                <p>Choose your PDFs, press “Upload &amp; generate QR”, and a QR code appears instantly. Print it, put it on a notice board or send it in chat — whoever scans it opens a download page with every file and a ZIP of the whole batch.</p>
-            </details>
-            <details>
-                <summary>Can I convert images, Excel or text into a PDF here?</summary>
-                <p>Yes. Pick Image, Excel/CSV or Text in the converter, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
-            </details>
-            <details>
-                <summary>Can I turn a PDF back into images, Word or Excel?</summary>
-                <p>Yes. In the reverse converter, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text — shared through the same QR download page.</p>
-            </details>
-            <details>
-                <summary>Is QuickPDF QR free, and do I need an account?</summary>
-                <p>It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data.</p>
-            </details>
-            <details>
-                <summary>How long are my files and QR links available?</summary>
-                <p>Uploads and generated PDFs are deleted automatically after about 30 minutes, so download or save anything you need before the link expires.</p>
-            </details>
-            <details>
-                <summary>Do converted PDFs support Nepali (Devanagari) text?</summary>
-                <p>Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes.</p>
-            </details>
+        <section class="section" id="faq">
+            <div class="section-head">
+                <span class="eyebrow">Answers</span>
+                <h2>Frequently asked questions</h2>
+            </div>
+            <div class="faq-list">
+                <details>
+                    <summary>How do I share a PDF with a QR code?</summary>
+                    <p>Choose your PDFs, press “Upload &amp; generate QR”, and a QR code appears instantly. Print it, put it on a notice board or send it in chat — whoever scans it opens a download page with every file and a ZIP of the whole batch.</p>
+                </details>
+                <details>
+                    <summary>Can I convert images, Excel or text into a PDF here?</summary>
+                    <p>Yes. Open the “Anything → PDF” tab, pick Image, Excel/CSV or Text, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
+                </details>
+                <details>
+                    <summary>Can I turn a PDF back into images, Word or Excel?</summary>
+                    <p>Yes. In the “PDF → anything” tab, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text — shared through the same QR download page.</p>
+                </details>
+                <details>
+                    <summary>Is QuickPDF QR free, and do I need an account?</summary>
+                    <p>It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data.</p>
+                </details>
+                <details>
+                    <summary>How long are my files and QR links available?</summary>
+                    <p>Uploads and generated files are deleted automatically after about 30 minutes, so download or save anything you need before the link expires.</p>
+                </details>
+                <details>
+                    <summary>Do converted PDFs support Nepali (Devanagari) text?</summary>
+                    <p>Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes.</p>
+                </details>
+            </div>
         </section>
 
-        <script type="application/ld+json">
+        <footer class="site">
+            <p>QuickPDF QR · PDF ⇄ QR · files are deleted after 30 minutes</p>
+            <div class="foot-links">
+                <a href="#tools">Tools</a>
+                <a href="#faq">FAQ</a>
+                <a href="{{ url_for('sitemap') }}">Sitemap</a>
+            </div>
+        </footer>
+    </main>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
         {
-          "@context": "https://schema.org",
-          "@graph": [
+          "@type": "WebApplication",
+          "name": "QuickPDF QR",
+          "alternateName": "Quick PDF QR",
+          "url": "{{ request.url_root }}",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Any modern web browser",
+          "browserRequirements": "Requires JavaScript for drag and drop uploads",
+          "description": "Convert PDFs, images, Excel, CSV and text into documents and share them with a QR code that opens a download page with per-file and ZIP downloads.",
+          "featureList": [
+            "PDF to QR code",
+            "Image to PDF",
+            "Excel and CSV to PDF",
+            "Text to PDF",
+            "PDF to images, Word, Excel and text",
+            "Per-file or ZIP download",
+            "Devanagari (Nepali) text support"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
             {
-              "@type": "WebApplication",
-              "name": "QuickPDF QR",
-              "alternateName": "Quick PDF QR",
-              "url": "{{ request.url_root }}",
-              "applicationCategory": "BusinessApplication",
-              "operatingSystem": "Any modern web browser",
-              "browserRequirements": "Requires JavaScript for drag and drop uploads",
-              "description": "Convert PDFs, images, Excel, CSV and text into documents and share them with a QR code that opens a download page with per-file and ZIP downloads.",
-              "featureList": [
-                "PDF to QR code",
-                "Image to PDF",
-                "Excel and CSV to PDF",
-                "Text to PDF",
-                "Per-file or ZIP download",
-                "Devanagari (Nepali) text support"
-              ],
-              "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
+              "@type": "Question",
+              "name": "How do I share a PDF with a QR code?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Choose your PDFs, press Upload and generate QR, and a QR code appears instantly. Print it or send it anywhere; whoever scans it opens a download page with every file and a ZIP of the whole batch."
               }
             },
             {
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "How do I share a PDF with a QR code?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Choose your PDFs, press Upload and generate QR, and a QR code appears instantly. Print it or send it anywhere; whoever scans it opens a download page with every file and a ZIP of the whole batch."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Can I convert images, Excel or text into a PDF here?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. Pick Image, Excel/CSV or Text in the converter, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Can I turn a PDF back into images, Word or Excel?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. In the reverse converter, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text, shared through the same QR download page."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Is QuickPDF QR free, and do I need an account?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "How long are my files and QR links available?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Uploads and generated PDFs are deleted automatically after about 30 minutes, so download or save anything you need before the link expires."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Do converted PDFs support Nepali (Devanagari) text?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes."
-                  }
-                }
-              ]
+              "@type": "Question",
+              "name": "Can I convert images, Excel or text into a PDF here?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Open the Anything to PDF tab, pick Image, Excel/CSV or Text, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I turn a PDF back into images, Word or Excel?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. In the PDF to anything tab, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text, shared through the same QR download page."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is QuickPDF QR free, and do I need an account?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long are my files and QR links available?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Uploads and generated PDFs are deleted automatically after about 30 minutes, so download or save anything you need before the link expires."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do converted PDFs support Nepali (Devanagari) text?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes."
+              }
             }
           ]
         }
-        </script>
-
-        <footer class="note">QuickPDF QR · PDF to QR code · Upload, convert, share · Links expire after a short time</footer>
-    </div>
+      ]
+    }
+    </script>
 
     <script>
-        const input = document.getElementById('pdf_files');
-        const picked = document.getElementById('picked');
-        const drop = document.getElementById('dropZone');
+        (function () {
+            const tabs = Array.from(document.querySelectorAll('.tab'));
+            const panels = Array.from(document.querySelectorAll('.panel'));
 
-        input.addEventListener('change', () => {
-            const files = Array.from(input.files || []);
-            if (!files.length) { picked.textContent = ''; return; }
-            const total = files.reduce((sum, f) => sum + f.size, 0);
-            const mb = (total / (1024 * 1024)).toFixed(2);
-            picked.textContent = files.length + (files.length === 1 ? ' file selected' : ' files selected') + ' · ' + mb + ' MB';
-        });
-
-        ['dragenter', 'dragover'].forEach(evt =>
-            drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.add('is-active'); }));
-        ['dragleave', 'drop'].forEach(evt =>
-            drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.remove('is-active'); }));
-        drop.addEventListener('drop', e => {
-            if (e.dataTransfer && e.dataTransfer.files.length) {
-                input.files = e.dataTransfer.files;
-                input.dispatchEvent(new Event('change'));
+            function activate(name) {
+                tabs.forEach(tab => {
+                    const on = tab.dataset.tab === name;
+                    tab.setAttribute('aria-selected', on ? 'true' : 'false');
+                });
+                panels.forEach(panel => {
+                    const on = panel.id === 'panel-' + name;
+                    panel.classList.toggle('is-active', on);
+                    if (on) { panel.removeAttribute('hidden'); } else { panel.setAttribute('hidden', ''); }
+                });
             }
-        });
+
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('click', () => activate(tab.dataset.tab));
+                tab.addEventListener('keydown', event => {
+                    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+                    event.preventDefault();
+                    const next = tabs[(index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+                    activate(next.dataset.tab);
+                    next.focus();
+                });
+            });
+
+            document.querySelectorAll('[data-tab-target]').forEach(link => {
+                link.addEventListener('click', () => activate(link.dataset.tabTarget));
+            });
+
+            document.querySelectorAll('form.tool-form').forEach(form => {
+                const input = form.querySelector('input[type="file"]');
+                const output = form.querySelector('.picked');
+                const drop = form.querySelector('.drop');
+                if (!input || !output) return;
+
+                function render() {
+                    const files = Array.from(input.files || []);
+                    if (!files.length) { output.textContent = ''; return; }
+                    const mb = (files.reduce((sum, file) => sum + file.size, 0) / 1048576).toFixed(2);
+                    output.textContent = files.length + (files.length === 1 ? ' file selected' : ' files selected') + ' · ' + mb + ' MB';
+                }
+
+                input.addEventListener('change', render);
+
+                if (!drop) return;
+                ['dragenter', 'dragover'].forEach(type =>
+                    drop.addEventListener(type, event => { event.preventDefault(); drop.classList.add('is-active'); }));
+                ['dragleave', 'drop'].forEach(type =>
+                    drop.addEventListener(type, event => { event.preventDefault(); drop.classList.remove('is-active'); }));
+                drop.addEventListener('drop', event => {
+                    if (event.dataTransfer && event.dataTransfer.files.length) {
+                        input.files = event.dataTransfer.files;
+                        render();
+                    }
+                });
+            });
+        })();
     </script>
 </body>
 </html>
