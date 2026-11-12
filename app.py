@@ -75,6 +75,22 @@ def cleanup_expired_files(force=False):
     return removed
 
 
+def _safe_name(filename):
+    """Keep the user's original file name, minus any path bits."""
+    name = os.path.basename((filename or "").replace("\\", "/")).replace("\x00", "").strip()
+    return name or "document.pdf"
+
+
+def _stored_name(batch_id, original):
+    return f"{batch_id}__{original}"
+
+
+def _download_name(stored):
+    """Recover the original name from a stored '<batch id>__<name>' file."""
+    base = os.path.basename(stored)
+    return base.split("__", 1)[1] if "__" in base else base
+
+
 @app.before_request
 def _cleanup_expired_files():
     cleanup_expired_files()
@@ -86,33 +102,45 @@ def index():
         cleanup_expired_files(force=True)
         files = request.files.getlist("pdf_files")
         if files:
-            uploaded_files = []
-            zip_name = str(uuid.uuid4()) + ".zip"
-            zip_path = os.path.join(ZIP_FOLDER, zip_name)
+            batch_id = str(uuid.uuid4())
+            uploads = []
 
-            with ZipFile(zip_path, 'w') as zipf:
-                for file in files:
-                    if file.filename.endswith(".pdf"):
-                        unique_pdf_name = str(uuid.uuid4()) + ".pdf"
-                        pdf_path = os.path.join(UPLOAD_FOLDER, unique_pdf_name)
-                        file.save(pdf_path)
-                        zipf.write(pdf_path, arcname=file.filename)
-                        uploaded_files.append({
-                            "original": file.filename,
-                            "saved": unique_pdf_name
-                        })
+            for file in files:
+                if (file.filename or "").lower().endswith(".pdf"):
+                    original = _safe_name(file.filename)
+                    stored = _stored_name(batch_id, original)
+                    file.save(os.path.join(UPLOAD_FOLDER, stored))
+                    uploads.append({"original": original, "stored": stored})
 
-            zip_url = url_for("download_zip", filename=zip_name, _external=True)
-            qr_img = qrcode.make(zip_url)
-            qr_path = os.path.join(QR_FOLDER, zip_name + ".png")
-            qr_img.save(qr_path)
+            if uploads:
+                if len(uploads) == 1:
+                    bundle_name = os.path.splitext(uploads[0]["original"])[0] + ".zip"
+                else:
+                    bundle_name = f"QuickPDF-{len(uploads)}-files.zip"
 
-            return render_template(
-                "qr.html",
-                qr_image=url_for("qr_image", filename=f"{zip_name}.png"),
-                zip_url=zip_url,
-                uploaded_files=uploaded_files
-            )
+                zip_stored = _stored_name(batch_id, bundle_name)
+                zip_path = os.path.join(ZIP_FOLDER, zip_stored)
+
+                with ZipFile(zip_path, 'w') as zipf:
+                    for item in uploads:
+                        zipf.write(
+                            os.path.join(UPLOAD_FOLDER, item["stored"]),
+                            arcname=item["original"],
+                        )
+
+                zip_url = url_for("download_zip", filename=zip_stored, _external=True)
+                qr_name = f"{batch_id}.png"
+                qrcode.make(zip_url).save(os.path.join(QR_FOLDER, qr_name))
+
+                return render_template(
+                    "qr.html",
+                    qr_image=url_for("qr_image", filename=qr_name),
+                    zip_url=zip_url,
+                    uploaded_files=[
+                        {"original": item["original"], "saved": item["stored"]}
+                        for item in uploads
+                    ],
+                )
 
     return render_template("index.html")
 
@@ -130,14 +158,24 @@ def qr_image(filename):
     return send_from_directory(QR_FOLDER, filename)
 
 
-@app.route("/uploads/zips/<filename>")
+@app.route("/uploads/zips/<path:filename>")
 def download_zip(filename):
-    return send_from_directory(ZIP_FOLDER, filename)
+    return send_from_directory(
+        ZIP_FOLDER,
+        filename,
+        as_attachment=True,
+        download_name=_download_name(filename),
+    )
 
 
-@app.route("/uploads/<filename>")
+@app.route("/uploads/<path:filename>")
 def download_pdf(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
+    return send_from_directory(
+        UPLOAD_FOLDER,
+        filename,
+        as_attachment=True,
+        download_name=_download_name(filename),
+    )
 
 
 if __name__ == "__main__":
