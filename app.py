@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, send_from_directory, url_for
+from flask import Flask, Response, redirect, render_template, request, send_from_directory, url_for
 import base64
 import qrcode
 import os
@@ -133,7 +133,10 @@ def index():
             if uploads:
                 return _build_bundle_and_qr(batch_id, uploads)
 
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        google_verification=os.environ.get("GOOGLE_SITE_VERIFICATION", ""),
+    )
 
 
 CONVERT_MODES = {"image", "sheet", "text"}
@@ -206,6 +209,49 @@ def _build_bundle_and_qr(batch_id, uploads):
         share_url=share_url,
         uploaded_files=[{"original": item["original"], "saved": item["stored"]} for item in uploads],
     )
+
+
+SITEMAP_LAST_MOD = "2026-11-12"
+
+
+@app.after_request
+def _seo_headers(response):
+    """Keep temporary file and download URLs out of search results."""
+    if request.path.startswith(("/uploads/", "/qr/", "/d/")):
+        response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
+    return response
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /uploads/",
+        "Disallow: /qr/",
+        "Disallow: /d/",
+        "",
+        f"Sitemap: {url_for('sitemap', _external=True)}",
+        "",
+    ]
+    return Response("\n".join(lines), mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap():
+    parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        "  <url>",
+        f"    <loc>{url_for('index', _external=True)}</loc>",
+        f"    <lastmod>{SITEMAP_LAST_MOD}</lastmod>",
+        "    <changefreq>weekly</changefreq>",
+        "    <priority>1.0</priority>",
+        "  </url>",
+        "</urlset>",
+        "",
+    ]
+    return Response("\n".join(parts), mimetype="application/xml")
 
 
 @app.errorhandler(413)

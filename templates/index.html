@@ -4,7 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6c63ff">
-    <title>QuickPDF QR | Share PDFs with a single scan</title>
+    <title>PDF to QR Code Generator – Share PDFs Free | QuickPDF QR</title>
+    <meta name="description" content="Turn any PDF into a QR code in seconds. Scan to download each file or the whole ZIP, and convert images, Excel, CSV or text to PDF — free, no sign-up, links auto-expire.">
+    <meta name="keywords" content="pdf to qr code, qr code for pdf, share pdf by qr code, pdf qr generator, image to pdf, excel to pdf, csv to pdf, text to pdf, free pdf converter, quickpdf qr">
+    <meta name="author" content="QuickPDF QR">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="{{ request.url_root }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="QuickPDF QR">
+    <meta property="og:title" content="PDF to QR Code Generator – Share PDFs Free">
+    <meta property="og:description" content="Upload PDFs and get a scannable QR code instantly — or convert images, Excel and text to PDF. Anyone who scans can download every file or the whole ZIP.">
+    <meta property="og:url" content="{{ request.url_root }}">
+    <meta property="og:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="QuickPDF QR — turn PDFs, images, Excel and text into a QR code">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PDF to QR Code Generator – Share PDFs Free">
+    <meta name="twitter:description" content="Upload PDFs and get a QR code instantly, or convert images, Excel and text to PDF. Free, no sign-up.">
+    <meta name="twitter:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
+
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    {% if google_verification %}<meta name="google-site-verification" content="{{ google_verification }}">{% endif %}
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -165,14 +188,40 @@
         }
 
         footer.note { text-align: center; color: #9aa0ae; font-size: .74rem; font-weight: 600; margin-top: 22px; }
+
+        .info { margin-top: clamp(16px, 2.5vw, 26px); }
+        .feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 13px; }
+        @media (min-width: 720px) { .feat { grid-template-columns: 1fr 1fr; gap: 13px 26px; } }
+        .feat li { position: relative; padding-left: 26px; font-size: .84rem; font-weight: 600; color: var(--muted); line-height: 1.6; }
+        .feat li::before {
+            content: ""; position: absolute; left: 2px; top: .42em;
+            width: 11px; height: 6px;
+            border-left: 2.4px solid var(--brand); border-bottom: 2.4px solid var(--brand);
+            transform: rotate(-45deg); border-radius: 1px;
+        }
+        .feat strong { color: var(--ink); font-weight: 800; }
+
+        details {
+            border: 1px solid var(--line); border-radius: 14px;
+            padding: 12px 16px; margin-bottom: 10px; background: #fcfcff;
+        }
+        details:last-of-type { margin-bottom: 0; }
+        details summary {
+            cursor: pointer; list-style: none; font-size: .86rem; font-weight: 800;
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        details summary::-webkit-details-marker { display: none; }
+        details summary::after { content: "+"; color: var(--brand); font-weight: 800; font-size: 1rem; }
+        details[open] summary::after { content: "–"; }
+        details p { margin: 10px 0 0; font-size: .82rem; font-weight: 600; color: var(--muted); line-height: 1.65; }
     </style>
 </head>
 <body>
     <div class="shell">
         <header class="hero">
             <span class="badge"><span class="dot"></span> PDF to QR</span>
-            <h1>Share any PDF with <span>one quick scan</span></h1>
-            <p>Bundle your documents, generate a QR code, and let anyone download them — separately or as one ZIP.</p>
+            <h1>PDF to QR code with <span>one quick scan</span></h1>
+            <p>Bundle your PDFs or convert images, Excel and text — then hand out a single QR code that opens a download page with every file and the whole ZIP.</p>
         </header>
 
         <div class="grid">
@@ -257,7 +306,119 @@
             </form>
         </section>
 
-        <footer class="note">QuickPDF QR · Upload, convert, share · Links expire after a short time</footer>
+        <section class="card info">
+            <h2>What you can do with QuickPDF QR</h2>
+            <ul class="feat">
+                <li><strong>PDF to QR code.</strong> Upload one or a batch of PDFs and get a scannable code in seconds — no account, no app install.</li>
+                <li><strong>One link, every file.</strong> The scanner opens a download page listing each PDF, with a single ZIP button for the whole batch.</li>
+                <li><strong>Image to PDF.</strong> Turn JPG, PNG or WebP photos into a tidy A4 PDF, one page per image, with EXIF rotation fixed.</li>
+                <li><strong>Excel, CSV and text to PDF.</strong> Spreadsheets become a readable table and notes become a clean document.</li>
+                <li><strong>Original file names.</strong> Downloads keep the name you uploaded — no renamed or random files.</li>
+                <li><strong>Nepali text supported.</strong> Devanagari and Latin text both render correctly in generated PDFs.</li>
+            </ul>
+        </section>
+
+        <section class="card info">
+            <h2>Frequently asked questions</h2>
+            <details>
+                <summary>How do I share a PDF with a QR code?</summary>
+                <p>Choose your PDFs, press “Upload &amp; generate QR”, and a QR code appears instantly. Print it, put it on a notice board or send it in chat — whoever scans it opens a download page with every file and a ZIP of the whole batch.</p>
+            </details>
+            <details>
+                <summary>Can I convert images, Excel or text into a PDF here?</summary>
+                <p>Yes. Pick Image, Excel/CSV or Text in the converter, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
+            </details>
+            <details>
+                <summary>Is QuickPDF QR free, and do I need an account?</summary>
+                <p>It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data.</p>
+            </details>
+            <details>
+                <summary>How long are my files and QR links available?</summary>
+                <p>Uploads and generated PDFs are deleted automatically after about 30 minutes, so download or save anything you need before the link expires.</p>
+            </details>
+            <details>
+                <summary>Do converted PDFs support Nepali (Devanagari) text?</summary>
+                <p>Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes.</p>
+            </details>
+        </section>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebApplication",
+              "name": "QuickPDF QR",
+              "alternateName": "Quick PDF QR",
+              "url": "{{ request.url_root }}",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "Any modern web browser",
+              "browserRequirements": "Requires JavaScript for drag and drop uploads",
+              "description": "Convert PDFs, images, Excel, CSV and text into documents and share them with a QR code that opens a download page with per-file and ZIP downloads.",
+              "featureList": [
+                "PDF to QR code",
+                "Image to PDF",
+                "Excel and CSV to PDF",
+                "Text to PDF",
+                "Per-file or ZIP download",
+                "Devanagari (Nepali) text support"
+              ],
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              }
+            },
+            {
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "How do I share a PDF with a QR code?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Choose your PDFs, press Upload and generate QR, and a QR code appears instantly. Print it or send it anywhere; whoever scans it opens a download page with every file and a ZIP of the whole batch."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can I convert images, Excel or text into a PDF here?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Pick Image, Excel/CSV or Text in the converter, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Is QuickPDF QR free, and do I need an account?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How long are my files and QR links available?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Uploads and generated PDFs are deleted automatically after about 30 minutes, so download or save anything you need before the link expires."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Do converted PDFs support Nepali (Devanagari) text?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes."
+                  }
+                }
+              ]
+            }
+          ]
+        }
+        </script>
+
+        <footer class="note">QuickPDF QR · PDF to QR code · Upload, convert, share · Links expire after a short time</footer>
     </div>
 
     <script>
