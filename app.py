@@ -7,6 +7,10 @@ from zipfile import ZipFile
 
 app = Flask(__name__)
 
+# Vercel rejects request bodies above ~4.5 MB, so cap uploads before that.
+MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "4"))
+app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -69,6 +73,14 @@ def index():
             )
 
     return render_template("index.html")
+
+
+@app.errorhandler(413)
+def upload_too_large(error):
+    return render_template(
+        "error.html",
+        message=f"Your upload is too large. Keep all PDFs together under {MAX_UPLOAD_MB} MB."
+    ), 413
 
 
 @app.route("/qr/<path:filename>")
