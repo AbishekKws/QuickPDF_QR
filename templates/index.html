@@ -90,6 +90,8 @@
 
         .upload { display: flex; flex-direction: column; }
         .drop {
+            position: relative;
+            display: block;
             border: 2px dashed #d6d3ff;
             background: linear-gradient(180deg, #faf9ff, #f5f4ff);
             border-radius: 20px;
@@ -98,7 +100,7 @@
             transition: border-color .2s, background .2s;
         }
         .drop:hover, .drop.is-active { border-color: var(--brand); background: #f3f2ff; }
-        .drop svg { color: var(--brand); }
+        .drop svg { display: block; margin: 0 auto; color: var(--brand); }
         .drop strong { display: block; margin: 12px 0 4px; font-size: .95rem; font-weight: 800; }
         .drop small { display: block; color: var(--muted); font-size: .78rem; font-weight: 600; line-height: 1.5; }
         .drop input[type="file"] {
