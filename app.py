@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, send_from_directory, url_for
+import base64
 import qrcode
 import os
 import tempfile
@@ -81,14 +82,28 @@ def _safe_name(filename):
     return name or "document.pdf"
 
 
+def _encode_name(name):
+    """Encode a file name so the stored path stays URL-safe (no spaces)."""
+    return base64.urlsafe_b64encode(name.encode("utf-8")).decode("ascii").rstrip("=")
+
+
+def _decode_name(token):
+    try:
+        padding = "=" * (-len(token) % 4)
+        return base64.urlsafe_b64decode(token + padding).decode("utf-8")
+    except Exception:
+        return token
+
+
 def _stored_name(batch_id, original):
-    return f"{batch_id}__{original}"
+    return f"{batch_id}__{_encode_name(original)}"
 
 
 def _download_name(stored):
-    """Recover the original name from a stored '<batch id>__<name>' file."""
+    """Recover the original name from a stored '<batch id>__<token>' file."""
     base = os.path.basename(stored)
-    return base.split("__", 1)[1] if "__" in base else base
+    token = base.split("__", 1)[1] if "__" in base else base
+    return _decode_name(token)
 
 
 @app.before_request
@@ -165,6 +180,7 @@ def download_zip(filename):
         filename,
         as_attachment=True,
         download_name=_download_name(filename),
+        mimetype="application/zip",
     )
 
 
@@ -175,6 +191,7 @@ def download_pdf(filename):
         filename,
         as_attachment=True,
         download_name=_download_name(filename),
+        mimetype="application/pdf",
     )
 
 
