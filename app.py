@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_from_directory, url_for
+from flask import Flask, redirect, render_template, request, send_from_directory, url_for
 import base64
 import qrcode
 import os
@@ -7,6 +7,8 @@ import tempfile
 import time
 import uuid
 from zipfile import ZipFile
+
+import converters
 
 app = Flask(__name__)
 
@@ -129,38 +131,81 @@ def index():
                     uploads.append({"original": original, "stored": stored})
 
             if uploads:
-                if len(uploads) == 1:
-                    bundle_name = os.path.splitext(uploads[0]["original"])[0] + ".zip"
-                else:
-                    bundle_name = f"QuickPDF-{len(uploads)}-files.zip"
-
-                zip_stored = _stored_name(batch_id, bundle_name)
-                zip_path = os.path.join(ZIP_FOLDER, zip_stored)
-
-                with ZipFile(zip_path, 'w') as zipf:
-                    for item in uploads:
-                        zipf.write(
-                            os.path.join(UPLOAD_FOLDER, item["stored"]),
-                            arcname=item["original"],
-                        )
-
-                zip_url = url_for("download_zip", filename=zip_stored, _external=True)
-                share_url = url_for("download_page", batch_id=batch_id, _external=True)
-                qr_name = f"{batch_id}.png"
-                qrcode.make(share_url).save(os.path.join(QR_FOLDER, qr_name))
-
-                return render_template(
-                    "qr.html",
-                    qr_image=url_for("qr_image", filename=qr_name),
-                    zip_url=zip_url,
-                    share_url=share_url,
-                    uploaded_files=[
-                        {"original": item["original"], "saved": item["stored"]}
-                        for item in uploads
-                    ],
-                )
+                return _build_bundle_and_qr(batch_id, uploads)
 
     return render_template("index.html")
+
+
+CONVERT_MODES = {"image", "sheet", "text"}
+
+
+@app.route("/convert", methods=["POST"])
+def convert():
+    """Turn images, spreadsheets or text into one PDF and share it by QR."""
+    mode = request.form.get("mode", "image")
+    files = [f for f in request.files.getlist("files") if f and f.filename]
+
+    if mode not in CONVERT_MODES or not files:
+        return redirect(url_for("index"))
+
+    cleanup_expired_files(force=True)
+    first_name = _safe_name(files[0].filename)
+    stem = os.path.splitext(first_name)[0] or "document"
+
+    try:
+        if mode == "image":
+            pdf_bytes = converters.images_to_pdf([(f.filename, f.stream) for f in files])
+            name = f"{stem}.pdf" if len(files) == 1 else f"QuickPDF-{len(files)}-images.pdf"
+        elif mode == "sheet":
+            rows = converters.read_table(first_name, files[0].stream)
+            pdf_bytes = converters.table_to_pdf(rows, title=stem)
+            name = f"{stem}.pdf"
+        else:
+            pdf_bytes = converters.text_to_pdf(converters.decode_text(files[0].read()))
+            name = f"{stem}.pdf"
+    except converters.ConversionError as exc:
+        return render_template("error.html", message=str(exc)), 400
+    except Exception:
+        return render_template(
+            "error.html",
+            message="We could not convert that file. Please try another format.",
+        ), 400
+
+    batch_id = str(uuid.uuid4())
+    stored = _stored_name(batch_id, name)
+    with open(os.path.join(UPLOAD_FOLDER, stored), "wb") as handle:
+        handle.write(pdf_bytes)
+
+    return _build_bundle_and_qr(batch_id, [{"original": name, "stored": stored}])
+
+
+def _build_bundle_and_qr(batch_id, uploads):
+    """Zip the batch, generate the QR for its download page and render it."""
+    if len(uploads) == 1:
+        bundle_name = os.path.splitext(uploads[0]["original"])[0] + ".zip"
+    else:
+        bundle_name = f"QuickPDF-{len(uploads)}-files.zip"
+
+    zip_stored = _stored_name(batch_id, bundle_name)
+    with ZipFile(os.path.join(ZIP_FOLDER, zip_stored), "w") as zipf:
+        for item in uploads:
+            zipf.write(
+                os.path.join(UPLOAD_FOLDER, item["stored"]),
+                arcname=item["original"],
+            )
+
+    zip_url = url_for("download_zip", filename=zip_stored, _external=True)
+    share_url = url_for("download_page", batch_id=batch_id, _external=True)
+    qr_name = f"{batch_id}.png"
+    qrcode.make(share_url).save(os.path.join(QR_FOLDER, qr_name))
+
+    return render_template(
+        "qr.html",
+        qr_image=url_for("qr_image", filename=qr_name),
+        zip_url=zip_url,
+        share_url=share_url,
+        uploaded_files=[{"original": item["original"], "saved": item["stored"]} for item in uploads],
+    )
 
 
 @app.errorhandler(413)

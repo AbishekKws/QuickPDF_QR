@@ -2,3 +2,6 @@ Flask==3.0.3
 qrcode==8.0
 pillow==10.4.0
 gunicorn==23.0.0
+fpdf2==2.9.0
+openpyxl==3.1.5
+uharfbuzz==0.57.0

@@ -136,6 +136,34 @@
             gap: 7px; color: var(--muted); font-size: .74rem; font-weight: 700;
         }
 
+        .convert { margin-top: clamp(16px, 2.5vw, 26px); }
+        .convert p.lead { margin: -8px 0 16px; color: var(--muted); font-size: .85rem; font-weight: 600; line-height: 1.55; }
+
+        .modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(138px, 1fr)); gap: 8px; margin-bottom: 14px; }
+        .mode { position: relative; }
+        .mode input { position: absolute; opacity: 0; pointer-events: none; }
+        .mode span {
+            display: block; text-align: center; cursor: pointer;
+            border: 1.5px solid var(--line); border-radius: 12px; background: #fff;
+            padding: 10px 8px; font-size: .78rem; font-weight: 800; color: #4b5563;
+            transition: border-color .18s, color .18s, background .18s, box-shadow .18s;
+        }
+        .mode input:checked + span {
+            border-color: var(--brand); color: var(--brand); background: #f3f2ff;
+            box-shadow: 0 8px 18px rgba(108, 99, 255, .15);
+        }
+        .mode input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+        .conv-input {
+            width: 100%; border: 2px dashed #d6d3ff; background: #faf9ff; border-radius: 14px;
+            padding: 14px; font-family: inherit; font-size: .8rem; font-weight: 600; color: var(--muted);
+        }
+        .conv-input::file-selector-button {
+            font-family: inherit; font-weight: 800; font-size: .78rem; color: var(--brand);
+            background: #fff; border: 1.5px solid var(--brand); border-radius: 10px;
+            padding: 8px 14px; margin-right: 12px; cursor: pointer;
+        }
+
         footer.note { text-align: center; color: #9aa0ae; font-size: .74rem; font-weight: 600; margin-top: 22px; }
     </style>
 </head>
@@ -201,7 +229,35 @@
             </section>
         </div>
 
-        <footer class="note">QuickPDF QR · Local-friendly uploads · Links expire after a short time</footer>
+        <section class="card convert">
+            <h2>Convert anything to PDF</h2>
+            <p class="lead">Images, spreadsheets or plain text — we build the PDF, then share it with a QR exactly like above.</p>
+            <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data">
+                <div class="modes" role="radiogroup" aria-label="What are you converting?">
+                    <label class="mode">
+                        <input type="radio" name="mode" value="image" checked>
+                        <span>Image → PDF</span>
+                    </label>
+                    <label class="mode">
+                        <input type="radio" name="mode" value="sheet">
+                        <span>Excel / CSV → PDF</span>
+                    </label>
+                    <label class="mode">
+                        <input type="radio" name="mode" value="text">
+                        <span>Text → PDF</span>
+                    </label>
+                </div>
+
+                <input class="conv-input" type="file" name="files" id="convertFiles" required multiple
+                       accept="image/*,.csv,.xlsx,.xlsm,.txt,.md">
+
+                <button type="submit" class="submit">Convert &amp; get QR &rarr;</button>
+
+                <div class="trust">JPG · PNG · WebP · XLSX · CSV · TXT</div>
+            </form>
+        </section>
+
+        <footer class="note">QuickPDF QR · Upload, convert, share · Links expire after a short time</footer>
     </div>
 
     <script>
