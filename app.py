@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_from_directory, url_for
 import qrcode
 import os
 import tempfile
+import time
 import uuid
 from zipfile import ZipFile
 
@@ -10,6 +11,12 @@ app = Flask(__name__)
 # Vercel rejects request bodies above ~4.5 MB, so cap uploads before that.
 MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "4"))
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
+
+# Uploaded PDFs, ZIPs and QR images are removed after this many minutes so
+# storage does not fill up. Set FILE_TTL_MINUTES=0 to disable cleanup.
+FILE_TTL_MINUTES = int(os.environ.get("FILE_TTL_MINUTES", "30"))
+CLEANUP_INTERVAL_SECONDS = 300
+_last_cleanup = 0.0
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -39,9 +46,44 @@ for _folder in (UPLOAD_FOLDER, QR_FOLDER, ZIP_FOLDER):
     os.makedirs(_folder, exist_ok=True)
 
 
+def cleanup_expired_files(force=False):
+    """Delete generated files older than FILE_TTL_MINUTES."""
+    global _last_cleanup
+    if FILE_TTL_MINUTES <= 0:
+        return 0
+
+    now = time.time()
+    if not force and now - _last_cleanup < CLEANUP_INTERVAL_SECONDS:
+        return 0
+    _last_cleanup = now
+
+    cutoff = now - FILE_TTL_MINUTES * 60
+    removed = 0
+    for folder in (UPLOAD_FOLDER, QR_FOLDER, ZIP_FOLDER):
+        try:
+            names = os.listdir(folder)
+        except OSError:
+            continue
+        for name in names:
+            path = os.path.join(folder, name)
+            try:
+                if os.path.isfile(path) and os.path.getmtime(path) < cutoff:
+                    os.remove(path)
+                    removed += 1
+            except OSError:
+                pass
+    return removed
+
+
+@app.before_request
+def _cleanup_expired_files():
+    cleanup_expired_files()
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
+        cleanup_expired_files(force=True)
         files = request.files.getlist("pdf_files")
         if files:
             uploaded_files = []
