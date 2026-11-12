@@ -306,6 +306,37 @@
             </form>
         </section>
 
+        <section class="card convert">
+            <h2>Convert a PDF into other formats</h2>
+            <p class="lead">The reverse direction: take each page out as an image, or pull the text into a text, Word or Excel file.</p>
+            <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data">
+                <div class="modes" role="radiogroup" aria-label="What do you want to get?">
+                    <label class="mode">
+                        <input type="radio" name="mode" value="images" checked>
+                        <span>PDF → Images</span>
+                    </label>
+                    <label class="mode">
+                        <input type="radio" name="mode" value="text">
+                        <span>PDF → Text</span>
+                    </label>
+                    <label class="mode">
+                        <input type="radio" name="mode" value="docx">
+                        <span>PDF → Word</span>
+                    </label>
+                    <label class="mode">
+                        <input type="radio" name="mode" value="xlsx">
+                        <span>PDF → Excel</span>
+                    </label>
+                </div>
+
+                <input class="conv-input" type="file" name="files" accept=".pdf,application/pdf" required>
+
+                <button type="submit" class="submit">Reverse &amp; get QR &rarr;</button>
+
+                <div class="trust">JPG pages · TXT · DOCX · XLSX</div>
+            </form>
+        </section>
+
         <section class="card info">
             <h2>What you can do with QuickPDF QR</h2>
             <ul class="feat">
@@ -313,6 +344,7 @@
                 <li><strong>One link, every file.</strong> The scanner opens a download page listing each PDF, with a single ZIP button for the whole batch.</li>
                 <li><strong>Image to PDF.</strong> Turn JPG, PNG or WebP photos into a tidy A4 PDF, one page per image, with EXIF rotation fixed.</li>
                 <li><strong>Excel, CSV and text to PDF.</strong> Spreadsheets become a readable table and notes become a clean document.</li>
+                <li><strong>PDF back to images, Word, Excel or text.</strong> Save every page as a JPG, or pull the content out as an editable DOCX, XLSX or TXT file.</li>
                 <li><strong>Original file names.</strong> Downloads keep the name you uploaded — no renamed or random files.</li>
                 <li><strong>Nepali text supported.</strong> Devanagari and Latin text both render correctly in generated PDFs.</li>
             </ul>
@@ -327,6 +359,10 @@
             <details>
                 <summary>Can I convert images, Excel or text into a PDF here?</summary>
                 <p>Yes. Pick Image, Excel/CSV or Text in the converter, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
+            </details>
+            <details>
+                <summary>Can I turn a PDF back into images, Word or Excel?</summary>
+                <p>Yes. In the reverse converter, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text — shared through the same QR download page.</p>
             </details>
             <details>
                 <summary>Is QuickPDF QR free, and do I need an account?</summary>
@@ -386,6 +422,14 @@
                   "acceptedAnswer": {
                     "@type": "Answer",
                     "text": "Yes. Pick Image, Excel/CSV or Text in the converter, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can I turn a PDF back into images, Word or Excel?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. In the reverse converter, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text, shared through the same QR download page."
                   }
                 },
                 {

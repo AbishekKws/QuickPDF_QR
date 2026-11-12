@@ -114,11 +114,11 @@
             </div>
             <h1>Files shared with you</h1>
         </div>
-        <p class="sub">{{ files|length }} PDF{% if files|length != 1 %}s{% endif %} ready — pick the one you need, or grab everything in a single ZIP.</p>
+        <p class="sub">{{ files|length }} file{% if files|length != 1 %}s{% endif %} ready — pick what you need, or grab everything in a single ZIP.</p>
 
         {% for file in files %}
         <div class="file-row">
-            <div class="file-icon">PDF</div>
+            <div class="file-icon">{{ file.original.rsplit('.', 1)[-1][:4]|upper }}</div>
             <div class="file-name" title="{{ file.original }}">{{ file.original }}</div>
             <a href="{{ url_for('download_pdf', filename=file.stored) }}" class="btn-file">Download</a>
         </div>

@@ -140,7 +140,7 @@
             <h2>{{ uploaded_files|length }} document{% if uploaded_files|length != 1 %}s{% endif %} included</h2>
             {% for file in uploaded_files %}
             <div class="file-row">
-                <div class="file-icon">PDF</div>
+                <div class="file-icon">{{ file.original.rsplit('.', 1)[-1][:4]|upper }}</div>
                 <div class="file-name" title="{{ file.original }}">{{ file.original }}</div>
                 <a href="{{ url_for('download_pdf', filename=file.saved) }}" class="file-link">Get</a>
             </div>

@@ -194,6 +194,154 @@ def text_to_pdf(text):
     return bytes(pdf.output())
 
 
+MAX_PDF_PAGES = 20
+PDF_IMAGE_DPI_STEPS = (110, 90, 72)
+PDF_IMAGE_BUDGET = 3_500_000  # stay under the ~4.5 MB function response limit
+
+
+def _open_pdf(stream):
+    """Open an uploaded PDF for reading, or raise ConversionError."""
+    try:
+        import pymupdf
+    except ImportError:  # pragma: no cover - older package name
+        try:
+            import fitz as pymupdf
+        except ImportError as exc:
+            raise ConversionError("PDF reading is unavailable right now") from exc
+
+    data = stream.read() if hasattr(stream, "read") else stream
+    if not data[:1024].lstrip().startswith(b"%PDF") and b"%PDF" not in data[:1024]:
+        raise ConversionError("that file is not a PDF")
+
+    try:
+        document = pymupdf.open(stream=data, filetype="pdf")
+    except Exception as exc:
+        raise ConversionError("could not read that PDF") from exc
+
+    if getattr(document, "needs_pass", False):
+        document.close()
+        raise ConversionError("that PDF is password protected")
+    if document.page_count == 0:
+        document.close()
+        raise ConversionError("that PDF has no pages")
+    if document.page_count > MAX_PDF_PAGES:
+        pages = document.page_count
+        document.close()
+        raise ConversionError(
+            f"that PDF has {pages} pages — the limit is {MAX_PDF_PAGES} pages per conversion"
+        )
+    return document
+
+
+def pdf_to_images(stream):
+    """Render every PDF page to a JPEG, lowering the DPI until it fits the budget."""
+    document = _open_pdf(stream)
+    try:
+        pages = []
+        for dpi in PDF_IMAGE_DPI_STEPS:
+            pages = []
+            total = 0
+            for index in range(document.page_count):
+                pixmap = document.load_page(index).get_pixmap(dpi=dpi)
+                image = Image.frombytes(
+                    "RGB", (pixmap.width, pixmap.height), pixmap.samples
+                )
+                buffer = io.BytesIO()
+                image.save(buffer, format="JPEG", quality=82, optimize=True)
+                data = buffer.getvalue()
+                pages.append(data)
+                total += len(data)
+            if total <= PDF_IMAGE_BUDGET:
+                break
+        return pages
+    finally:
+        document.close()
+
+
+def pdf_to_text(stream):
+    """Extract the text layer of a PDF, page by page."""
+    document = _open_pdf(stream)
+    try:
+        chunks = []
+        for index in range(document.page_count):
+            text = document.load_page(index).get_text("text").strip()
+            chunks.append(f"--- Page {index + 1} ---\n{text}" if text else f"--- Page {index + 1} ---")
+    finally:
+        document.close()
+
+    content = "\n\n".join(chunks)
+    if not content.strip().replace("---", "").strip():
+        raise ConversionError("no text found — that PDF is probably a scan")
+    return content
+
+
+def pdf_to_docx(stream, title=None):
+    """Turn a text PDF into an editable Word document."""
+    try:
+        from docx import Document
+    except ImportError as exc:  # pragma: no cover - dependency guard
+        raise ConversionError("Word export is unavailable right now") from exc
+
+    pdf = _open_pdf(stream)
+    document = Document()
+    wrote = False
+    try:
+        if title:
+            document.add_heading(_cell(title), level=1)
+            wrote = True
+        for index in range(pdf.page_count):
+            if index:
+                document.add_page_break()
+            for block in pdf.load_page(index).get_text("blocks"):
+                text = " ".join(
+                    part.strip() for part in (block[4] or "").splitlines() if part.strip()
+                ) if len(block) >= 5 and isinstance(block[4], str) else ""
+                if text:
+                    document.add_paragraph(text)
+                    wrote = True
+    finally:
+        pdf.close()
+
+    if not wrote:
+        raise ConversionError("no text found — that PDF is probably a scan")
+
+    buffer = io.BytesIO()
+    document.save(buffer)
+    return buffer.getvalue()
+
+
+def pdf_to_xlsx(stream):
+    """Put every line of the PDF into an Excel sheet with page numbers."""
+    try:
+        from openpyxl import Workbook
+    except ImportError as exc:  # pragma: no cover - dependency guard
+        raise ConversionError("Excel export is unavailable right now") from exc
+
+    pdf = _open_pdf(stream)
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "PDF text"
+    sheet.append(["Page", "Line", "Text"])
+    rows = 0
+    try:
+        for index in range(pdf.page_count):
+            text = pdf.load_page(index).get_text("text")
+            for line in text.splitlines():
+                if line.strip():
+                    rows += 1
+                    sheet.append([index + 1, rows, line.strip()[:32000]])
+    finally:
+        pdf.close()
+
+    if not rows:
+        raise ConversionError("no text found — that PDF is probably a scan")
+
+    sheet.column_dimensions["C"].width = 90
+    buffer = io.BytesIO()
+    workbook.save(buffer)
+    return buffer.getvalue()
+
+
 def read_table(filename, stream):
     """Read .csv / .xlsx / .xlsm into a list of rows."""
     name = (filename or "").lower()
