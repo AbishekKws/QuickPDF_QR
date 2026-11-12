@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}PDF to QR Code Generator – Share PDFs Free | QuickPDF QR{% endblock %}
+{% block description %}Upload one PDF or a batch and get a scannable QR code instantly. Anyone who scans it can download each file or the whole ZIP — free, no sign-up, links expire automatically.{% endblock %}
+{% block keywords %}<meta name="keywords" content="pdf to qr code, qr code for pdf, share pdf by qr code, pdf qr generator, upload pdf qr">{% endblock %}
+
+{% block content %}
+    <section class="page-head">
+        <span class="eyebrow">PDF → QR</span>
+        <h1>Turn a PDF into a <span class="grad">QR code</span></h1>
+        <p class="lede">Add one PDF or a whole batch. You get a QR code and a download page where the scanner can take each file separately, or everything as one ZIP.</p>
+    </section>
+
+    <div class="tool-panel">
+        <section class="card">
+            <h2>Upload your PDFs</h2>
+            <p class="lead">Up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB in total. Files keep their original names, so the download page looks exactly like what you uploaded.</p>
+
+            <form action="{{ url_for('pdf_to_qr') }}" method="post" enctype="multipart/form-data"
+                  class="tool-form" data-busy="Uploading…">
+                <label class="drop" for="pdf_files">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/>
+                        <path d="M20 15v3a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-3"/>
+                    </svg>
+                    <strong>Drop your PDFs here</strong>
+                    <small>or choose files from your device</small>
+                    <span class="pick">Choose PDF files</span>
+                    <input type="file" name="pdf_files" id="pdf_files" accept=".pdf,application/pdf" multiple required>
+                </label>
+                <div class="selection">
+                    <p class="picked" aria-live="polite"></p>
+                    <button type="button" class="clear" hidden>Clear</button>
+                </div>
+                <div class="warn" aria-live="assertive" hidden></div>
+
+                <button type="submit" class="submit">Upload &amp; generate QR →</button>
+                <p class="fineprint">PDF only · {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB total · auto-delete after {{ config.FILE_TTL_MINUTES }} minutes</p>
+            </form>
+
+            <div class="note">
+                <span class="bullet">i</span>
+                <span><strong>What the scanner sees:</strong> a simple page listing every PDF, each with its own download button, plus one button for the complete ZIP. Nothing else, no app to install.</span>
+            </div>
+        </section>
+
+        <p class="center-cta">
+            <a class="backlink" href="{{ url_for('how_it_works') }}">How the QR sharing works →</a>
+            &nbsp;·&nbsp;
+            <a class="backlink" href="{{ url_for('convert') }}">Need to convert something into a PDF? →</a>
+        </p>
+    </div>
+{% endblock %}

@@ -20,6 +20,9 @@ app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_MB * 1024 * 1024
 # storage does not fill up. Set FILE_TTL_MINUTES=0 to disable cleanup.
 FILE_TTL_MINUTES = int(os.environ.get("FILE_TTL_MINUTES", "30"))
 CLEANUP_INTERVAL_SECONDS = 300
+
+app.config["MAX_UPLOAD_MB"] = MAX_UPLOAD_MB
+app.config["FILE_TTL_MINUTES"] = FILE_TTL_MINUTES
 _last_cleanup = 0.0
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -114,42 +117,81 @@ def _cleanup_expired_files():
     cleanup_expired_files()
 
 
+def _handle_upload():
+    """Save uploaded PDFs, build the bundle and render the QR page."""
+    cleanup_expired_files(force=True)
+    files = request.files.getlist("pdf_files")
+    if not files:
+        return None
+
+    batch_id = str(uuid.uuid4())
+    uploads = []
+    for file in files:
+        if (file.filename or "").lower().endswith(".pdf"):
+            original = _safe_name(file.filename)
+            stored = _stored_name(batch_id, original)
+            file.save(os.path.join(UPLOAD_FOLDER, stored))
+            uploads.append({"original": original, "stored": stored})
+
+    if not uploads:
+        return None
+    return _build_bundle_and_qr(batch_id, uploads)
+
+
+def _render(template, active, **extra):
+    """Render a page with the shared layout values."""
+    return render_template(
+        template,
+        active=active,
+        canonical=url_for(request.endpoint, _external=True),
+        google_verification=os.environ.get("GOOGLE_SITE_VERIFICATION", ""),
+        **extra,
+    )
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        cleanup_expired_files(force=True)
-        files = request.files.getlist("pdf_files")
-        if files:
-            batch_id = str(uuid.uuid4())
-            uploads = []
+        response = _handle_upload()
+        if response is not None:
+            return response
+    return _render("index.html", "home")
 
-            for file in files:
-                if (file.filename or "").lower().endswith(".pdf"):
-                    original = _safe_name(file.filename)
-                    stored = _stored_name(batch_id, original)
-                    file.save(os.path.join(UPLOAD_FOLDER, stored))
-                    uploads.append({"original": original, "stored": stored})
 
-            if uploads:
-                return _build_bundle_and_qr(batch_id, uploads)
+@app.route("/pdf-to-qr", methods=["GET", "POST"])
+def pdf_to_qr():
+    """Dedicated page for sharing PDFs with a QR code."""
+    if request.method == "POST":
+        response = _handle_upload()
+        if response is not None:
+            return response
+    return _render("pdf_to_qr.html", "pdf-to-qr")
 
-    return render_template(
-        "index.html",
-        google_verification=os.environ.get("GOOGLE_SITE_VERIFICATION", ""),
-    )
+
+@app.route("/how-it-works")
+def how_it_works():
+    return _render("how_it_works.html", "how-it-works")
+
+
+@app.route("/faq")
+def faq():
+    return _render("faq.html", "faq")
 
 
 CONVERT_MODES = {"image", "sheet", "text"}
 
 
-@app.route("/convert", methods=["POST"])
+@app.route("/convert", methods=["GET", "POST"])
 def convert():
-    """Turn images, spreadsheets or text into one PDF and share it by QR."""
+    """Convert images, spreadsheets or text into a PDF and share it by QR."""
+    if request.method == "GET":
+        return _render("convert_to_pdf.html", "convert")
+
     mode = request.form.get("mode", "image")
     files = [f for f in request.files.getlist("files") if f and f.filename]
 
     if mode not in CONVERT_MODES or not files:
-        return redirect(url_for("index"))
+        return redirect(url_for("convert"))
 
     cleanup_expired_files(force=True)
     first_name = _safe_name(files[0].filename)
@@ -193,14 +235,17 @@ def _store_upload(batch_id, original_name, data):
     return {"original": original_name, "stored": stored}
 
 
-@app.route("/convert-from-pdf", methods=["POST"])
+@app.route("/convert-from-pdf", methods=["GET", "POST"])
 def convert_from_pdf():
     """Turn a PDF back into images, text, Word or Excel and share it by QR."""
+    if request.method == "GET":
+        return _render("convert_from_pdf.html", "convert-from-pdf")
+
     mode = request.form.get("mode", "images")
     files = [f for f in request.files.getlist("files") if f and f.filename]
 
     if mode not in REVERSE_MODES or not files:
-        return redirect(url_for("index"))
+        return redirect(url_for("convert_from_pdf"))
 
     cleanup_expired_files(force=True)
     source = files[0]
@@ -293,20 +338,34 @@ def robots_txt():
     return Response("\n".join(lines), mimetype="text/plain")
 
 
+PUBLIC_PAGES = (
+    ("index", "1.0", "weekly"),
+    ("pdf_to_qr", "0.9", "weekly"),
+    ("convert", "0.9", "weekly"),
+    ("convert_from_pdf", "0.9", "weekly"),
+    ("how_it_works", "0.6", "monthly"),
+    ("faq", "0.6", "monthly"),
+)
+
+
 @app.route("/sitemap.xml")
 def sitemap():
     parts = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        "  <url>",
-        f"    <loc>{url_for('index', _external=True)}</loc>",
-        f"    <lastmod>{SITEMAP_LAST_MOD}</lastmod>",
-        "    <changefreq>weekly</changefreq>",
-        "    <priority>1.0</priority>",
-        "  </url>",
-        "</urlset>",
-        "",
     ]
+    for endpoint, priority, changefreq in PUBLIC_PAGES:
+        parts.extend(
+            [
+                "  <url>",
+                f"    <loc>{url_for(endpoint, _external=True)}</loc>",
+                f"    <lastmod>{SITEMAP_LAST_MOD}</lastmod>",
+                f"    <changefreq>{changefreq}</changefreq>",
+                f"    <priority>{priority}</priority>",
+                "  </url>",
+            ]
+        )
+    parts.extend(["</urlset>", ""])
     return Response("\n".join(parts), mimetype="application/xml")
 
 

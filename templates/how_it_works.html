@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}How QuickPDF QR Works – Upload, Scan, Download{% endblock %}
+{% block description %}Three steps: add your files, get a QR code, scan and download. See how QR sharing, conversion in both directions and automatic file cleanup work.{% endblock %}
+{% block keywords %}<meta name="keywords" content="how qr code file sharing works, share pdf with qr code, pdf qr download page">{% endblock %}
+
+{% block content %}
+    <section class="page-head">
+        <span class="eyebrow">How it works</span>
+        <h1>From your file to their phone <span class="grad">in three steps</span></h1>
+        <p class="lede">No accounts, no app installs and no email attachments. Everything happens on one shared download page that a QR code opens.</p>
+    </section>
+
+    <div class="tool-panel">
+        <ol class="steps">
+            <li class="step">
+                <span class="step-num">1</span>
+                <div>
+                    <h3>Add your files</h3>
+                    <p>Open a tool and drop in what you have: PDFs to share, or images, spreadsheets and text to convert. Everything is checked before upload, so the format and the {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB limit are clear upfront.</p>
+                </div>
+            </li>
+            <li class="step">
+                <span class="step-num">2</span>
+                <div>
+                    <h3>Get the QR code</h3>
+                    <p>The files are bundled, a ZIP is prepared and a QR code is generated right away. Open the code on screen, print it, or send the link like any other URL.</p>
+                </div>
+            </li>
+            <li class="step">
+                <span class="step-num">3</span>
+                <div>
+                    <h3>Scan and download</h3>
+                    <p>Scanning opens the download page. Each file has its own button, and one more button takes the whole bundle as a ZIP — no sign-in, works on any phone camera.</p>
+                </div>
+            </li>
+        </ol>
+
+        <section class="card" style="margin-top: 18px;">
+            <h2>Two directions, one workflow</h2>
+            <p class="lead">Conversion and sharing are separate tools, but the result is always the same QR download page.</p>
+            <div class="feat-grid">
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 5v14"/><path d="M6 11l6-6 6 6"/>
+                        </svg>
+                    </div>
+                    <h3>Into a PDF</h3>
+                    <p>Photos become A4 pages, Excel and CSV sheets become a table, and text becomes a readable document. Nepali and English both render correctly.</p>
+                    <p style="margin-top: 10px;"><a class="backlink" href="{{ url_for('convert') }}">Open the converter →</a></p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 19V5"/><path d="M6 13l6 6 6-6"/>
+                        </svg>
+                    </div>
+                    <h3>Out of a PDF</h3>
+                    <p>Every page as a JPG, or the text layer extracted into TXT, Word and Excel. Up to 20 pages per conversion, with the DPI adjusted to stay small.</p>
+                    <p style="margin-top: 10px;"><a class="backlink" href="{{ url_for('convert_from_pdf') }}">Open the reverse tool →</a></p>
+                </article>
+                <article class="feat">
+                    <div class="feat-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" opacity=".75"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1.5" opacity=".75"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                        </svg>
+                    </div>
+                    <h3>Share the result</h3>
+                    <p>Upload existing PDFs and get a QR code straight away, complete with a ZIP download and the original file names intact.</p>
+                    <p style="margin-top: 10px;"><a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF →</a></p>
+                </article>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top: 18px;">
+            <h2>Privacy and limits</h2>
+            <p class="lead">Short-lived links by design, so nothing piles up on the server.</p>
+            <div class="note">
+                <span class="bullet">1</span>
+                <span><strong>Automatic cleanup.</strong> Uploads, ZIPs and QR images older than about {{ config.FILE_TTL_MINUTES }} minutes are deleted automatically. Save what you need before the link expires.</span>
+            </div>
+            <div class="note">
+                <span class="bullet">2</span>
+                <span><strong>Size limits.</strong> {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB per batch keeps uploads quick on mobile data, and PDF-to-other conversions are capped at 20 pages.</span>
+            </div>
+            <div class="note">
+                <span class="bullet">3</span>
+                <span><strong>Not indexed.</strong> Download pages and file links are marked private, so search engines do not list them.</span>
+            </div>
+        </section>
+
+        <p class="center-cta">
+            <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">Start with a PDF</a>
+        </p>
+    </div>
+{% endblock %}

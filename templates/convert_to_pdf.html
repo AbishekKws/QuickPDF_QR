@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Image, Excel, CSV & Text to PDF Converter – Free | QuickPDF QR{% endblock %}
+{% block description %}Convert JPG, PNG, WebP photos, XLSX or CSV spreadsheets and TXT files into a PDF online, then share the result with a QR code. Free, no sign-up, Nepali text supported.{% endblock %}
+{% block keywords %}<meta name="keywords" content="image to pdf, jpg to pdf, png to pdf, excel to pdf, xlsx to pdf, csv to pdf, text to pdf, free pdf converter online">{% endblock %}
+
+{% block content %}
+    <section class="page-head">
+        <span class="eyebrow">Anything → PDF</span>
+        <h1>Images, Excel and text <span class="grad">to PDF</span></h1>
+        <p class="lede">Pick a format, add your files and we build the PDF — then hand it over with a QR code exactly like a normal upload.</p>
+    </section>
+
+    <div class="tool-panel">
+        <section class="card">
+            <h2>Convert to PDF</h2>
+            <p class="lead">Choose what you are adding. Images become one A4 page each, spreadsheets become a readable table, and text becomes a clean document.</p>
+
+            <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data"
+                  class="tool-form" data-busy="Converting…" data-multi-when="image">
+                <div class="chips" role="radiogroup" aria-label="What are you converting?">
+                    <label class="chip"><input type="radio" name="mode" value="image" checked><span>Image</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="sheet"><span>Excel / CSV</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
+                </div>
+
+                <label class="drop" for="convert_files">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M14 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7l-4-4z"/>
+                        <path d="M14 3v4h4"/><path d="M9 13h6"/><path d="M9 17h4"/>
+                    </svg>
+                    <strong>Drop your files here</strong>
+                    <small>photos, spreadsheets or a text file</small>
+                    <span class="pick">Choose files</span>
+                    <input type="file" name="files" id="convert_files" multiple required
+                           accept="image/*,.csv,.xlsx,.xlsm,.txt,.md">
+                </label>
+                <div class="selection">
+                    <p class="picked" aria-live="polite"></p>
+                    <button type="button" class="clear" hidden>Clear</button>
+                </div>
+                <div class="warn" aria-live="assertive" hidden></div>
+
+                <button type="submit" class="submit">Convert &amp; get QR →</button>
+                <p class="fineprint">JPG · PNG · WebP · XLSX · CSV · TXT · {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB total</p>
+            </form>
+
+            <div class="note">
+                <span class="bullet">i</span>
+                <span><strong>What each format does:</strong> images are fitted to A4 pages with rotation corrected; Excel and CSV keep only the first sheet as a table; text keeps its line breaks. Nepali (Devanagari) and English both render properly.</span>
+            </div>
+        </section>
+
+        <p class="center-cta">
+            <a class="backlink" href="{{ url_for('convert_from_pdf') }}">Going the other way? PDF → images, Word, Excel →</a>
+            &nbsp;·&nbsp;
+            <a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF you already have →</a>
+        </p>
+    </div>
+{% endblock %}

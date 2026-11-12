@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}PDF to JPG, Word, Excel & Text Converter – Free | QuickPDF QR{% endblock %}
+{% block description %}Turn a PDF into one JPG per page, or extract its text into TXT, Word (DOCX) or Excel (XLSX). Up to 20 pages, free, and shared through a QR download page.{% endblock %}
+{% block keywords %}<meta name="keywords" content="pdf to jpg, pdf to image, pdf to word, pdf to docx, pdf to excel, pdf to xlsx, pdf to text, extract text from pdf">{% endblock %}
+
+{% block content %}
+    <section class="page-head">
+        <span class="eyebrow">PDF → anything</span>
+        <h1>PDF to images, Word, <span class="grad">Excel or text</span></h1>
+        <p class="lede">The reverse direction: render every page as a JPG, or pull the text out so you can edit it — then download it all from one QR code.</p>
+    </section>
+
+    <div class="tool-panel">
+        <section class="card">
+            <h2>Convert from a PDF</h2>
+            <p class="lead">Choose what you want to get, add a PDF of up to 20 pages, and we produce the files ready to download.</p>
+
+            <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data"
+                  class="tool-form" data-busy="Converting…">
+                <div class="chips" role="radiogroup" aria-label="What do you want to get?">
+                    <label class="chip"><input type="radio" name="mode" value="images" checked><span>Images</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="docx"><span>Word</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="xlsx"><span>Excel</span></label>
+                </div>
+
+                <label class="drop" for="frompdf_files">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 3h7l5 5v13a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+                        <path d="M14 3v5h5"/><path d="M12 11v6"/><path d="M9.5 14.5 12 17l2.5-2.5"/>
+                    </svg>
+                    <strong>Drop a PDF here</strong>
+                    <small>we turn it into images, text, Word or Excel</small>
+                    <span class="pick">Choose a PDF</span>
+                    <input type="file" name="files" id="frompdf_files" accept=".pdf,application/pdf" required>
+                </label>
+                <div class="selection">
+                    <p class="picked" aria-live="polite"></p>
+                    <button type="button" class="clear" hidden>Clear</button>
+                </div>
+                <div class="warn" aria-live="assertive" hidden></div>
+
+                <button type="submit" class="submit">Reverse &amp; get QR →</button>
+                <p class="fineprint">JPG pages · TXT · DOCX · XLSX · up to 20 pages · {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB total</p>
+            </form>
+
+            <div class="note">
+                <span class="bullet">i</span>
+                <span><strong>Scanned PDFs:</strong> text, Word and Excel need a text layer. If your PDF is only a photo of pages, use <strong>Images</strong> instead — it works for everything.</span>
+            </div>
+        </section>
+
+        <p class="center-cta">
+            <a class="backlink" href="{{ url_for('convert') }}">Need it the other way? Images, Excel or text → PDF →</a>
+        </p>
+    </div>
+{% endblock %}

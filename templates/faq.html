@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}QuickPDF QR FAQ – Limits, Privacy and Expiring Links{% endblock %}
+{% block description %}Answers about file size limits, QR link expiry, supported formats, Nepali text and password-protected PDFs in QuickPDF QR.{% endblock %}
+{% block keywords %}<meta name="keywords" content="quickpdf qr faq, pdf qr code limits, qr link expiry, supported file formats">{% endblock %}
+
+{% block content %}
+    <section class="page-head">
+        <span class="eyebrow">Answers</span>
+        <h1>Frequently asked <span class="grad">questions</span></h1>
+        <p class="lede">Everything about limits, formats and what happens to your files after the link expires.</p>
+    </section>
+
+    <div class="faq-list">
+        <details>
+            <summary>How do I share a PDF with a QR code?</summary>
+            <p>Open <a href="{{ url_for('pdf_to_qr') }}">PDF → QR</a>, choose your PDFs and press “Upload &amp; generate QR”. A QR code appears instantly. Print it, put it on a notice board or send it in chat — whoever scans it opens a download page with every file and a ZIP of the whole batch.</p>
+        </details>
+        <details>
+            <summary>Can I convert images, Excel or text into a PDF here?</summary>
+            <p>Yes. Open <a href="{{ url_for('convert') }}">Anything → PDF</a>, pick Image, Excel/CSV or Text, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
+        </details>
+        <details>
+            <summary>Can I turn a PDF back into images, Word or Excel?</summary>
+            <p>Yes. In <a href="{{ url_for('convert_from_pdf') }}">PDF → anything</a>, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text — shared through the same QR download page.</p>
+        </details>
+        <details>
+            <summary>Why does text extraction fail on some PDFs?</summary>
+            <p>Text, Word and Excel need a real text layer. A PDF made from scans or photos has none, so there is nothing to copy. Use the Images option for those — it renders the pages and always works.</p>
+        </details>
+        <details>
+            <summary>Is QuickPDF QR free, and do I need an account?</summary>
+            <p>It is completely free and needs no account or app. Each batch can be up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB in total, which keeps uploads fast on mobile data.</p>
+        </details>
+        <details>
+            <summary>How long are my files and QR links available?</summary>
+            <p>Uploads and generated files are deleted automatically after about {{ config.FILE_TTL_MINUTES }} minutes, so download or save anything you need before the link expires. After that the page shows “This link has expired.”</p>
+        </details>
+        <details>
+            <summary>Do converted PDFs support Nepali (Devanagari) text?</summary>
+            <p>Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes.</p>
+        </details>
+        <details>
+            <summary>Are my files private or searchable?</summary>
+            <p>Download pages and file links are marked <code>noindex</code>, so search engines do not list them, and nothing is ever shown publicly. Still, treat the QR code like a shared link: anyone who has it can download the files until it expires.</p>
+        </details>
+    </div>
+
+    <p class="center-cta">
+        <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">Upload a PDF</a>
+    </p>
+{% endblock %}
+
+{% block scripts %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I share a PDF with a QR code?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open the PDF to QR tool, choose your PDFs and press Upload and generate QR. A QR code appears instantly; whoever scans it opens a download page with every file and a ZIP of the whole batch."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert images, Excel or text into a PDF here?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Open the Anything to PDF tool, pick Image, Excel/CSV or Text, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I turn a PDF back into images, Word or Excel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. In the PDF to anything tool, pick Images, Text, Word or Excel and choose a PDF of up to 20 pages. You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does text extraction fail on some PDFs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Text, Word and Excel need a real text layer. A PDF made from scans or photos has none, so there is nothing to copy. Use the Images option for those."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is QuickPDF QR free, and do I need an account?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is completely free and needs no account or app. Each batch can be up to 4 MB in total, which keeps uploads fast on mobile data."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long are my files and QR links available?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Uploads and generated files are deleted automatically after about 30 minutes, so download or save anything you need before the link expires."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do converted PDFs support Nepali (Devanagari) text?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Converted PDFs bundle Devanagari and Latin fonts, so Nepali and English text both appear correctly instead of turning into empty boxes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my files private or searchable?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Download pages and file links are marked noindex, so search engines do not list them. Treat the QR code like a shared link: anyone who has it can download the files until it expires."
+          }
+        }
+      ]
+    }
+    </script>
+{% endblock %}

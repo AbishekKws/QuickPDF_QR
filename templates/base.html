@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6c63ff">
+    <title>{% block title %}QuickPDF QR{% endblock %}</title>
+    <meta name="description" content="{% block description %}Free PDF to QR code sharing and file conversion tools.{% endblock %}">
+    {% block keywords %}{% endblock %}
+    <meta name="author" content="QuickPDF QR">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="{{ canonical }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="QuickPDF QR">
+    <meta property="og:title" content="{{ self.title()|striptags|trim }}">
+    <meta property="og:description" content="{{ self.description()|striptags|trim }}">
+    <meta property="og:url" content="{{ canonical }}">
+    <meta property="og:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="QuickPDF QR — turn PDFs, images, Excel and text into a QR code">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.title()|striptags|trim }}">
+    <meta name="twitter:description" content="{{ self.description()|striptags|trim }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}">
+
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    {% if google_verification %}<meta name="google-site-verification" content="{{ google_verification }}">{% endif %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+    {% block head_extra %}{% endblock %}
+</head>
+<body data-limit-mb="{{ config.MAX_CONTENT_LENGTH // 1048576 }}">
+    <header class="topbar">
+        <div class="shell topbar-inner">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="mark">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <rect x="2" y="2" width="7" height="7" rx="1.6"/>
+                        <rect x="15" y="2" width="7" height="7" rx="1.6" opacity=".8"/>
+                        <rect x="2" y="15" width="7" height="7" rx="1.6" opacity=".8"/>
+                        <rect x="15" y="15" width="3" height="3" rx=".8"/>
+                        <rect x="19" y="15" width="3" height="3" rx=".8"/>
+                        <rect x="15" y="19" width="3" height="3" rx=".8"/>
+                        <rect x="19" y="19" width="3" height="3" rx=".8"/>
+                    </svg>
+                </span>
+                <span class="brand-name">QuickPDF <em>QR</em></span>
+            </a>
+
+            <nav class="nav" aria-label="Main">
+                <a href="{{ url_for('pdf_to_qr') }}" {% if active == 'pdf-to-qr' %}aria-current="page"{% endif %}>PDF → QR</a>
+                <a href="{{ url_for('convert') }}" {% if active == 'convert' %}aria-current="page"{% endif %}>To PDF</a>
+                <a href="{{ url_for('convert_from_pdf') }}" {% if active == 'convert-from-pdf' %}aria-current="page"{% endif %}>From PDF</a>
+                <a href="{{ url_for('how_it_works') }}" {% if active == 'how-it-works' %}aria-current="page"{% endif %}>How it works</a>
+                <a href="{{ url_for('faq') }}" {% if active == 'faq' %}aria-current="page"{% endif %}>FAQ</a>
+            </nav>
+
+            <span class="pill"><span class="dot"></span>Free · no sign-up</span>
+        </div>
+    </header>
+
+    <main class="shell">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="shell site">
+        <p>QuickPDF QR · files are deleted after {{ config.get('FILE_TTL_MINUTES', 30) }} minutes</p>
+        <div class="foot-links">
+            <a href="{{ url_for('pdf_to_qr') }}">PDF → QR</a>
+            <a href="{{ url_for('convert') }}">To PDF</a>
+            <a href="{{ url_for('convert_from_pdf') }}">From PDF</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+            <a href="{{ url_for('sitemap') }}">Sitemap</a>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
