@@ -2,61 +2,229 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QuickPDF QR | Smart & Fast</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6c63ff">
+    <title>QuickPDF QR | Share PDFs with a single scan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #6c63ff; --glass: rgba(255, 255, 255, 0.95); }
-        html, body { height: 100%; margin: 0; overflow-x: hidden; }
-        body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-family: 'Plus Jakarta Sans', sans-serif; padding: 15px;
+        :root {
+            --ink: #12172b;
+            --muted: #6b7280;
+            --line: #ecebf5;
+            --brand: #6c63ff;
+            --brand-2: #22a7f0;
+            --accent: #f0559b;
         }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .header-section { text-align: center; color: white; margin-bottom: 25px; animation: slideDown 0.8s ease-out; }
-        .header-section h1 { font-weight: 800; font-size: clamp(1.8rem, 6vw, 2.8rem); text-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 0; }
-        .main-wrapper { width: 100%; max-width: 950px; display: flex; flex-direction: column; gap: 20px; }
-        @media (min-width: 768px) { .main-wrapper { flex-direction: row; align-items: stretch; } .info-card, .upload-card { flex: 1; } }
-        .info-card, .upload-card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 28px; padding: 2.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .step-item { display: flex; align-items: flex-start; margin-bottom: 1.5rem; }
-        .step-number { background: var(--primary); color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin-right: 15px; flex-shrink: 0; }
-        .step-text h6 { font-weight: 700; margin-bottom: 2px; color: #333; }
-        .step-text p { font-size: 0.85rem; color: #555; margin: 0; }
-        .upload-card { text-align: center; display: flex; flex-direction: column; justify-content: center; }
-        .upload-card h2 { font-weight: 800; margin-bottom: 1.5rem; color: #1a1a1a; }
-        .custom-file-input { border: 2px dashed var(--primary); background: rgba(108, 99, 255, 0.05); border-radius: 16px; padding: 2rem 1rem; width: 100%; transition: 0.3s; color: #666; font-weight: 600; }
-        .btn-submit { background: linear-gradient(135deg, #6c63ff 0%, #00bfff 100%); color: white; font-weight: 700; padding: 1.1rem; border-radius: 15px; border: none; width: 100%; font-size: 1.1rem; box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); transition: 0.3s; margin-top: 1rem; }
-        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(108, 99, 255, 0.5); }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 767px) { body { height: auto; overflow-y: auto; } .info-card { order: 2; } .upload-card { order: 1; } }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: #fbfaff;
+            display: flex;
+            justify-content: center;
+            padding: clamp(16px, 4vw, 48px) clamp(14px, 4vw, 32px);
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            z-index: -1;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.55;
+        }
+        body::before { width: 460px; height: 460px; top: -140px; left: -120px; background: #d9d4ff; }
+        body::after { width: 520px; height: 520px; bottom: -200px; right: -140px; background: #cdeeff; }
+
+        .shell { width: 100%; max-width: 1040px; }
+
+        header.hero { text-align: center; margin-bottom: clamp(22px, 4vw, 40px); }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid var(--line);
+            color: var(--brand); font-size: 12px; font-weight: 700; letter-spacing: .04em;
+            padding: 7px 14px; border-radius: 999px; text-transform: uppercase;
+            box-shadow: 0 6px 18px rgba(17, 24, 39, .05);
+        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; }
+        h1 {
+            font-size: clamp(1.9rem, 5.4vw, 3rem);
+            font-weight: 800; letter-spacing: -.02em; line-height: 1.1;
+            margin: 16px 0 10px;
+        }
+        h1 span {
+            background: linear-gradient(100deg, var(--brand) 0%, var(--brand-2) 55%, var(--accent) 100%);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { margin: 0 auto; max-width: 520px; color: var(--muted); font-size: clamp(.92rem, 2.4vw, 1.02rem); font-weight: 500; }
+
+        .grid { display: grid; gap: clamp(16px, 2.5vw, 26px); grid-template-columns: 1fr; }
+        @media (min-width: 880px) { .grid { grid-template-columns: 1.05fr 1fr; align-items: stretch; } }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 26px;
+            padding: clamp(20px, 3vw, 32px);
+            box-shadow: 0 20px 50px rgba(17, 24, 39, .07);
+        }
+
+        .card h2 { margin: 0 0 18px; font-size: 1.06rem; font-weight: 800; letter-spacing: -.01em; }
+
+        .step { display: flex; gap: 14px; padding: 13px 0; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: 0; padding-bottom: 0; }
+        .step-num {
+            flex: 0 0 34px; height: 34px; border-radius: 11px;
+            display: grid; place-items: center;
+            font-weight: 800; font-size: .82rem; color: #fff;
+            background: linear-gradient(140deg, var(--brand), var(--brand-2));
+            box-shadow: 0 8px 18px rgba(108, 99, 255, .28);
+        }
+        .step h3 { margin: 0 0 3px; font-size: .9rem; font-weight: 700; }
+        .step p { margin: 0; font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+        .upload { display: flex; flex-direction: column; }
+        .drop {
+            border: 2px dashed #d6d3ff;
+            background: linear-gradient(180deg, #faf9ff, #f5f4ff);
+            border-radius: 20px;
+            padding: clamp(22px, 4vw, 34px) 18px;
+            text-align: center;
+            transition: border-color .2s, background .2s;
+        }
+        .drop:hover, .drop.is-active { border-color: var(--brand); background: #f3f2ff; }
+        .drop svg { color: var(--brand); }
+        .drop strong { display: block; margin: 12px 0 4px; font-size: .95rem; font-weight: 800; }
+        .drop small { display: block; color: var(--muted); font-size: .78rem; font-weight: 600; line-height: 1.5; }
+        .drop input[type="file"] {
+            position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;
+        }
+        .pick {
+            display: inline-block; margin-top: 14px; cursor: pointer;
+            background: #fff; border: 1.5px solid var(--brand); color: var(--brand);
+            font-weight: 700; font-size: .82rem; padding: 9px 18px; border-radius: 11px;
+            transition: background .18s, color .18s;
+        }
+        .pick:hover { background: var(--brand); color: #fff; }
+
+        .picked {
+            margin-top: 12px; min-height: 20px;
+            font-size: .78rem; font-weight: 700; color: var(--brand);
+            text-align: center;
+        }
+
+        .submit {
+            margin-top: 16px; width: 100%; border: 0; cursor: pointer;
+            padding: 15px 18px; border-radius: 15px;
+            font-family: inherit; font-size: .95rem; font-weight: 800; color: #fff;
+            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
+            box-shadow: 0 16px 30px rgba(108, 99, 255, .32);
+            transition: transform .18s, box-shadow .18s;
+        }
+        .submit:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .38); }
+        .submit:active { transform: translateY(0); }
+
+        .trust {
+            margin-top: 16px; display: flex; align-items: center; justify-content: center;
+            gap: 7px; color: var(--muted); font-size: .74rem; font-weight: 700;
+        }
+
+        footer.note { text-align: center; color: #9aa0ae; font-size: .74rem; font-weight: 600; margin-top: 22px; }
     </style>
 </head>
 <body>
-    <div class="header-section">
-        <h1>Amazing Tool 🙏</h1>
-        <p>Your PDFs to QR code magic happens here.</p>
-    </div>
-    <div class="main-wrapper">
-        <div class="info-card">
-            <h4 class="mb-4" style="font-weight:800; color:var(--primary);">🚀 Quick Guide</h4>
-            <div class="step-item"><div class="step-number">1</div><div class="step-text"><h6>Batch Upload</h6><p>Select all the PDFs you want to share.</p></div></div>
-            <div class="step-item"><div class="step-number">2</div><div class="step-text"><h6>Instant ZIP</h6><p>System bundles them automatically.</p></div></div>
-            <div class="step-item"><div class="step-number">3</div><div class="step-text"><h6>QR Generation</h6><p>Scan to download documents instantly.</p></div></div>
-        </div>
-        <div class="upload-card">
-            <h2>Ready to Start?</h2>
-            <form action="" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <input type="file" name="pdf_files" id="pdf_files" accept=".pdf" multiple required class="form-control custom-file-input">
+    <div class="shell">
+        <header class="hero">
+            <span class="badge"><span class="dot"></span> PDF to QR</span>
+            <h1>Share any PDF with <span>one quick scan</span></h1>
+            <p>Bundle your documents, generate a QR code, and let anyone download them — separately or as one ZIP.</p>
+        </header>
+
+        <div class="grid">
+            <section class="card">
+                <h2>How it works</h2>
+                <div class="step">
+                    <div class="step-num">1</div>
+                    <div>
+                        <h3>Batch upload</h3>
+                        <p>Pick one PDF or several at once — up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB in total.</p>
+                    </div>
                 </div>
-                <button type="submit" class="btn-submit">Upload & Generate QR &rarr;</button>
-            </form>
-            <div class="mt-4"><small class="text-muted">🔒 Secure & Private Processing</small></div>
+                <div class="step">
+                    <div class="step-num">2</div>
+                    <div>
+                        <h3>Instant bundle</h3>
+                        <p>The files are packed into a ZIP and a QR code is generated right away.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-num">3</div>
+                    <div>
+                        <h3>Scan &amp; download</h3>
+                        <p>The scanner picks the exact file they need, or takes the whole bundle.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card upload">
+                <h2>Ready to start?</h2>
+                <form action="" method="post" enctype="multipart/form-data" id="uploadForm">
+                    <label class="drop" id="dropZone" for="pdf_files">
+                        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/>
+                            <path d="M20 15v3a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-3"/>
+                        </svg>
+                        <strong>Drop your PDFs here</strong>
+                        <small>or choose files from your device</small>
+                        <span class="pick">Choose PDF files</span>
+                        <input type="file" name="pdf_files" id="pdf_files" accept=".pdf,application/pdf" multiple required>
+                    </label>
+
+                    <div class="picked" id="picked"></div>
+
+                    <button type="submit" class="submit">Upload &amp; generate QR &rarr;</button>
+
+                    <div class="trust">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                        </svg>
+                        Files are private and cleared automatically
+                    </div>
+                </form>
+            </section>
         </div>
+
+        <footer class="note">QuickPDF QR · Local-friendly uploads · Links expire after a short time</footer>
     </div>
+
+    <script>
+        const input = document.getElementById('pdf_files');
+        const picked = document.getElementById('picked');
+        const drop = document.getElementById('dropZone');
+
+        input.addEventListener('change', () => {
+            const files = Array.from(input.files || []);
+            if (!files.length) { picked.textContent = ''; return; }
+            const total = files.reduce((sum, f) => sum + f.size, 0);
+            const mb = (total / (1024 * 1024)).toFixed(2);
+            picked.textContent = files.length + (files.length === 1 ? ' file selected' : ' files selected') + ' · ' + mb + ' MB';
+        });
+
+        ['dragenter', 'dragover'].forEach(evt =>
+            drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.add('is-active'); }));
+        ['dragleave', 'drop'].forEach(evt =>
+            drop.addEventListener(evt, e => { e.preventDefault(); drop.classList.remove('is-active'); }));
+        drop.addEventListener('drop', e => {
+            if (e.dataTransfer && e.dataTransfer.files.length) {
+                input.files = e.dataTransfer.files;
+                input.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
 </body>
 </html>

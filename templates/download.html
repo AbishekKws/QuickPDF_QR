@@ -3,81 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6c63ff">
     <title>Download Files | QuickPDF QR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #6c63ff; --glass: rgba(255, 255, 255, 0.95); }
+        :root {
+            --ink: #12172b;
+            --muted: #6b7280;
+            --line: #ecebf5;
+            --brand: #6c63ff;
+            --brand-2: #22a7f0;
+            --accent: #f0559b;
+        }
         * { box-sizing: border-box; }
-        html, body { min-height: 100%; margin: 0; }
+        html, body { margin: 0; min-height: 100%; }
+
         body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: #fbfaff;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            padding: 14px;
+            padding: clamp(14px, 4vw, 40px);
+            position: relative; overflow-x: hidden;
         }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        body::before, body::after {
+            content: ""; position: fixed; z-index: -1; border-radius: 50%;
+            filter: blur(90px); opacity: .55;
+        }
+        body::before { width: 420px; height: 420px; top: -150px; left: -110px; background: #d9d4ff; }
+        body::after { width: 480px; height: 480px; bottom: -190px; right: -130px; background: #cdeeff; }
 
-        .download-card {
-            background: var(--glass);
-            border-radius: 24px;
-            padding: 1.6rem;
-            width: 100%;
-            max-width: 520px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.18);
-            animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .card {
+            width: 100%; max-width: 500px;
+            background: #fff; border: 1px solid var(--line); border-radius: 28px;
+            padding: clamp(22px, 5vw, 32px);
+            box-shadow: 0 24px 60px rgba(17, 24, 39, .10);
+            animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
         }
-        @keyframes scaleUp { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+        @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 
-        h1 {
-            font-weight: 800;
-            font-size: clamp(1.2rem, 5vw, 1.6rem);
-            background: linear-gradient(to right, #6c63ff, #e73c7e);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 0.25rem;
+        .head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+        .head-icon {
+            flex: 0 0 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; color: #fff;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            box-shadow: 0 10px 22px rgba(108, 99, 255, .28);
         }
-        .subtitle { color: #666; font-weight: 600; font-size: 0.85rem; margin-bottom: 1.1rem; }
+        h1 { margin: 0; font-size: clamp(1.15rem, 4.4vw, 1.45rem); font-weight: 800; letter-spacing: -.01em; }
+        .sub { margin: 0 0 20px; color: var(--muted); font-size: .83rem; font-weight: 600; line-height: 1.55; }
 
         .file-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 0.7rem 0.85rem;
-            border: 1px solid #eaeaf2; border-radius: 14px;
-            margin-bottom: 0.6rem; background: #fff;
+            display: flex; align-items: center; gap: 11px;
+            padding: 11px 12px; border: 1px solid var(--line); border-radius: 15px;
+            margin-bottom: 9px; background: #fcfcff;
+            transition: border-color .18s, box-shadow .18s;
         }
+        .file-row:hover { border-color: #dcd9ff; box-shadow: 0 8px 20px rgba(17, 24, 39, .05); }
         .file-icon {
-            width: 34px; height: 34px; border-radius: 10px; flex: 0 0 34px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(231, 60, 126, 0.12); color: #e73c7e; font-weight: 800; font-size: 0.7rem;
+            flex: 0 0 34px; height: 34px; border-radius: 10px; display: grid; place-items: center;
+            background: rgba(240, 85, 155, .12); color: var(--accent);
+            font-size: .64rem; font-weight: 800;
         }
         .file-name {
-            flex: 1; min-width: 0; font-weight: 700; font-size: 0.85rem; color: #2b2b2b;
+            flex: 1; min-width: 0; font-size: .82rem; font-weight: 700;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
+        .file-size { font-size: .7rem; font-weight: 700; color: #9aa0ae; }
+
         .btn-file {
-            border: 2px solid var(--primary); color: var(--primary); background: transparent;
-            border-radius: 10px; font-weight: 700; font-size: 0.75rem; padding: 0.35rem 0.75rem;
-            text-decoration: none; white-space: nowrap;
+            text-decoration: none; font-size: .73rem; font-weight: 800;
+            color: var(--brand); border: 1.5px solid var(--brand);
+            padding: 7px 13px; border-radius: 10px; white-space: nowrap;
+            transition: background .18s, color .18s;
         }
-        .btn-file:hover { background: var(--primary); color: #fff; }
+        .btn-file:hover { background: var(--brand); color: #fff; }
+
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 22px 0 16px; color: #b3b8c4;
+            font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+        }
+        .divider::before, .divider::after { content: ""; height: 1px; flex: 1; background: var(--line); }
 
         .btn-all {
-            display: block; text-align: center; margin-top: 1rem;
-            background: linear-gradient(135deg, #6c63ff 0%, #00bfff 100%);
-            color: #fff; font-weight: 800; text-decoration: none;
-            padding: 0.95rem 1rem; border-radius: 14px; font-size: 0.95rem;
-            box-shadow: 0 10px 22px rgba(108, 99, 255, 0.32);
+            display: flex; align-items: center; justify-content: center; gap: 9px;
+            text-decoration: none; color: #fff; font-size: .92rem; font-weight: 800;
+            padding: 15px 18px; border-radius: 15px;
+            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
+            box-shadow: 0 16px 30px rgba(108, 99, 255, .30);
+            transition: transform .18s, box-shadow .18s;
         }
-        .btn-all:hover { color: #fff; transform: translateY(-2px); }
+        .btn-all:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
 
-        .hint { text-align: center; color: #888; font-size: 0.72rem; font-weight: 600; margin-top: 0.9rem; }
+        .hint {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            margin: 16px 0 0; color: #9aa0ae; font-size: .72rem; font-weight: 700; text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="download-card">
-        <h1>Your files are ready 📄</h1>
-        <p class="subtitle">{{ files|length }} file{% if files|length != 1 %}s{% endif %} shared with you — download one by one, or grab everything at once.</p>
+    <div class="card">
+        <div class="head">
+            <div class="head-icon">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/>
+                </svg>
+            </div>
+            <h1>Files shared with you</h1>
+        </div>
+        <p class="sub">{{ files|length }} PDF{% if files|length != 1 %}s{% endif %} ready — pick the one you need, or grab everything in a single ZIP.</p>
 
         {% for file in files %}
         <div class="file-row">
@@ -88,10 +123,21 @@
         {% endfor %}
 
         {% if zip_name %}
-        <a href="{{ url_for('download_zip', filename=zip_name) }}" class="btn-all">Download All as ZIP ⬇</a>
+        <div class="divider">or all at once</div>
+        <a href="{{ url_for('download_zip', filename=zip_name) }}" class="btn-all">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"/><path d="M2 8h20l-2-4H4L2 8z"/><path d="M12 11v6"/><path d="M9.5 14.5L12 17l2.5-2.5"/>
+            </svg>
+            Download All as ZIP
+        </a>
         {% endif %}
 
-        <p class="hint">Links stop working after a while — save your files now.</p>
+        <p class="hint">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/>
+            </svg>
+            These links expire — save your files now.
+        </p>
     </div>
 </body>
 </html>

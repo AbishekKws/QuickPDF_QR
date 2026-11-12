@@ -2,148 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6c63ff">
     <title>QR Ready | QuickPDF QR</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #6c63ff; --glass: rgba(255, 255, 255, 0.94); }
-        
+        :root {
+            --ink: #12172b;
+            --muted: #6b7280;
+            --line: #ecebf5;
+            --brand: #6c63ff;
+            --brand-2: #22a7f0;
+            --accent: #f0559b;
+        }
         * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
 
         body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
-            height: 100dvh; /* Dynamic viewport height for mobile browsers */
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: #fbfaff;
             display: flex; align-items: center; justify-content: center;
-            font-family: 'Plus Jakarta Sans', sans-serif; padding: 10px; margin: 0;
-            overflow: hidden; /* Screen bhanda bahira najana dinai */
+            padding: clamp(14px, 4vw, 40px);
+            position: relative; overflow-x: hidden;
         }
+        body::before, body::after {
+            content: ""; position: fixed; z-index: -1; border-radius: 50%;
+            filter: blur(90px); opacity: .55;
+        }
+        body::before { width: 420px; height: 420px; top: -150px; left: -110px; background: #d9d4ff; }
+        body::after { width: 480px; height: 480px; bottom: -190px; right: -130px; background: #cdeeff; }
 
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .result-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border-radius: min(30px, 5vw);
-            padding: 1.5rem;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            max-width: 500px;
-            width: 100%;
-            max-height: 95vh; /* Card screen bhanda thulo huna na dine */
+        .card {
+            width: 100%; max-width: 460px;
+            background: #fff; border: 1px solid var(--line); border-radius: 28px;
+            padding: clamp(22px, 5vw, 34px);
+            box-shadow: 0 24px 60px rgba(17, 24, 39, .10);
             text-align: center;
-            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
+            animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
+        }
+        @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+
+        .tick {
+            width: 54px; height: 54px; margin: 0 auto 14px; border-radius: 50%;
+            display: grid; place-items: center; color: #fff;
+            background: linear-gradient(135deg, #34d399, #22c55e);
+            box-shadow: 0 12px 24px rgba(34, 197, 94, .3);
         }
 
-        @keyframes scaleUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        h1 {
+            margin: 0 0 6px; font-size: clamp(1.25rem, 4.6vw, 1.6rem);
+            font-weight: 800; letter-spacing: -.01em;
+        }
+        .sub { margin: 0 0 20px; color: var(--muted); font-size: .86rem; font-weight: 600; }
 
-        .success-icon { color: #23d5ab; font-size: 2rem; margin-bottom: 0.5rem; }
-        
-        h2 { 
-            font-weight: 800; 
-            font-size: clamp(1.2rem, 5vw, 1.8rem);
-            background: linear-gradient(to right, #6c63ff, #e73c7e);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+        .qr-frame {
+            display: inline-block; padding: 12px; border-radius: 20px;
+            background: #fff; border: 1px solid var(--line);
+            box-shadow: 0 12px 28px rgba(17, 24, 39, .07);
+        }
+        .qr-frame img { display: block; width: clamp(150px, 46vw, 200px); height: auto; border-radius: 8px; }
+
+        .scan-hint {
+            margin: 12px 0 20px; font-size: .76rem; font-weight: 700;
+            color: var(--brand); letter-spacing: .02em;
         }
 
-        .qr-wrapper {
-            background: white; padding: 10px; border-radius: 15px;
-            display: inline-block; box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            margin-bottom: 1rem; border: 2px solid #f0f0f0;
-            max-width: fit-content; align-self: center;
+        .btn {
+            display: block; text-decoration: none; text-align: center;
+            font-weight: 800; font-size: .9rem; border-radius: 14px;
+            padding: 14px 16px; transition: transform .18s, box-shadow .18s, background .18s;
         }
-
-        .qr-img { 
-            width: clamp(140px, 40vw, 200px); 
-            height: auto; 
-            aspect-ratio: 1/1; 
-            border-radius: 8px; 
+        .btn-primary {
+            color: #fff;
+            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
+            box-shadow: 0 16px 30px rgba(108, 99, 255, .30);
         }
-
-        .btn-main {
-            background: linear-gradient(135deg, #6c63ff 0%, #00bfff 100%);
-            color: white; font-weight: 700; padding: 0.8rem 1.5rem;
-            border-radius: 12px; text-decoration: none; display: block;
-            transition: 0.3s; width: 100%; box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
+        .btn-ghost {
+            margin-top: 10px; color: var(--brand);
+            border: 1.5px solid var(--brand); background: #fff;
         }
+        .btn-ghost:hover { background: #f3f2ff; }
 
-        .btn-main:hover { transform: translateY(-2px); color: white; opacity: 0.9; }
-
-        .pdf-list-container {
-            text-align: left; margin-top: 1rem; background: rgba(0,0,0,0.04);
-            padding: 1rem; border-radius: 18px; 
-            flex-grow: 1; /* Card bhitra ko space consume garne */
-            overflow-y: auto; /* List dherai bhaye yaha matrai scroll huncha */
+        .files { margin: 22px 0 0; text-align: left; }
+        .files h2 {
+            margin: 0 0 10px; font-size: .72rem; font-weight: 800;
+            letter-spacing: .08em; text-transform: uppercase; color: #9aa0ae;
         }
-
-        /* Custom scrollbar */
-        .pdf-list-container::-webkit-scrollbar { width: 4px; }
-        .pdf-list-container::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
-
-        .pdf-item {
-            background: white; border-radius: 10px; margin-bottom: 8px;
-            padding: 10px; display: flex; align-items: center;
-            justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        .file-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 11px; border: 1px solid var(--line); border-radius: 13px;
+            margin-bottom: 8px; background: #fcfcff;
         }
-
-        .pdf-name { 
-            font-size: 0.8rem; font-weight: 600; color: #444;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%;
+        .file-icon {
+            flex: 0 0 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+            background: rgba(240, 85, 155, .12); color: var(--accent);
+            font-size: .62rem; font-weight: 800;
         }
-
-        .btn-back-outline {
-            display: inline-block; margin-top: 1rem; color: #6c63ff;
-            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+        .file-name {
+            flex: 1; min-width: 0; font-size: .79rem; font-weight: 700;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-
-        /* Landscape orientation ma mobile ma adjust garne */
-        @media (max-height: 500px) {
-            .result-card { padding: 0.8rem; }
-            .qr-wrapper { margin-bottom: 0.5rem; }
-            .qr-img { width: 100px; }
-            h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .file-link {
+            font-size: .7rem; font-weight: 800; color: var(--brand);
+            text-decoration: none; border: 1.4px solid var(--brand);
+            padding: 5px 10px; border-radius: 9px; white-space: nowrap;
         }
+        .file-link:hover { background: var(--brand); color: #fff; }
     </style>
 </head>
 <body>
-
-<div class="result-card">
-    <div class="success-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-        </svg>
-    </div>
-    
-    <div class="title-section">
-    <h2>QR is Ready!</h2>
-    <p style="font-size: 0.9rem; color: #555; margin-top: -10px; font-weight: 600;">
-        Scan & Get Your Files 🚀
-    </p>
-    </div>
-    
-    <div class="qr-wrapper">
-        <img src="{{ qr_image }}" alt="QR" class="qr-img">
-    </div>
-    
-    <a href="{{ zip_url }}" target="_blank" class="btn-main">
-        Download ZIP Bundle
-    </a>
-
-    <div class="pdf-list-container">
-        <h6 class="mb-2 text-muted" style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Documents</h6>
-        {% for file in uploaded_files %}
-        <div class="pdf-item">
-            <span class="pdf-name" title="{{ file.original }}">{{ file.original }}</span>
-            <a href="{{ url_for('download_pdf', filename=file.saved) }}" target="_blank" class="btn btn-sm btn-outline-primary" style="font-size: 0.7rem; border-radius: 6px;">Open</a>
+    <div class="card">
+        <div class="tick">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 12.5l5 5L20 6.5"/>
+            </svg>
         </div>
-        {% endfor %}
+
+        <h1>QR is ready!</h1>
+        <p class="sub">Scan it to open the download page — files can be taken one by one or as a ZIP.</p>
+
+        <div class="qr-frame">
+            <img src="{{ qr_image }}" alt="QR code for your files">
+        </div>
+        <div class="scan-hint">Point a phone camera at the code</div>
+
+        <a href="{{ zip_url }}" class="btn btn-primary">Download ZIP bundle</a>
+        <a href="{{ url_for('index') }}" class="btn btn-ghost">&larr; Upload something else</a>
+
+        {% if uploaded_files %}
+        <div class="files">
+            <h2>{{ uploaded_files|length }} document{% if uploaded_files|length != 1 %}s{% endif %} included</h2>
+            {% for file in uploaded_files %}
+            <div class="file-row">
+                <div class="file-icon">PDF</div>
+                <div class="file-name" title="{{ file.original }}">{{ file.original }}</div>
+                <a href="{{ url_for('download_pdf', filename=file.saved) }}" class="file-link">Get</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
-
-    <a href="{{ url_for('index') }}" class="btn-back-outline">&larr; New QR</a>
-</div>
-
 </body>
 </html>

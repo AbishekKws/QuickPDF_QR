@@ -3,32 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickPDF QR | Upload Too Large</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#6c63ff">
+    <title>Something went wrong | QuickPDF QR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #6c63ff; --glass: rgba(255, 255, 255, 0.95); }
-        html, body { height: 100%; margin: 0; }
-        body {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Plus Jakarta Sans', sans-serif; padding: 15px;
+        :root {
+            --ink: #12172b;
+            --muted: #6b7280;
+            --line: #ecebf5;
+            --brand: #6c63ff;
+            --brand-2: #22a7f0;
         }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .error-card { background: var(--glass); border-radius: 28px; padding: 2.5rem; max-width: 480px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .error-card h1 { font-weight: 800; font-size: 2.6rem; margin-bottom: 0.5rem; color: #1a1a1a; }
-        .error-card p { color: #555; font-weight: 600; }
-        .btn-back { background: linear-gradient(135deg, #6c63ff 0%, #00bfff 100%); color: #fff; font-weight: 700; padding: 0.9rem 1.6rem; border-radius: 14px; text-decoration: none; display: inline-block; margin-top: 1.2rem; box-shadow: 0 10px 20px rgba(108, 99, 255, 0.3); }
-        .btn-back:hover { color: #fff; transform: translateY(-2px); }
+        * { box-sizing: border-box; }
+        html, body { margin: 0; min-height: 100%; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: #fbfaff;
+            display: flex; align-items: center; justify-content: center;
+            padding: clamp(14px, 4vw, 40px);
+            position: relative; overflow-x: hidden;
+        }
+        body::before, body::after {
+            content: ""; position: fixed; z-index: -1; border-radius: 50%;
+            filter: blur(90px); opacity: .55;
+        }
+        body::before { width: 420px; height: 420px; top: -150px; left: -110px; background: #ffe0ec; }
+        body::after { width: 480px; height: 480px; bottom: -190px; right: -130px; background: #cdeeff; }
+
+        .card {
+            width: 100%; max-width: 430px; text-align: center;
+            background: #fff; border: 1px solid var(--line); border-radius: 28px;
+            padding: clamp(24px, 5vw, 38px);
+            box-shadow: 0 24px 60px rgba(17, 24, 39, .10);
+            animation: rise .45s cubic-bezier(.2, .9, .3, 1.2);
+        }
+        @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+
+        .icon {
+            width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 18px;
+            display: grid; place-items: center; color: #fff;
+            background: linear-gradient(135deg, #f0559b, #ff8a5c);
+            box-shadow: 0 14px 28px rgba(240, 85, 155, .28);
+        }
+
+        h1 { margin: 0 0 8px; font-size: clamp(1.2rem, 4.6vw, 1.5rem); font-weight: 800; letter-spacing: -.01em; }
+        p { margin: 0 0 22px; color: var(--muted); font-size: .88rem; font-weight: 600; line-height: 1.6; }
+
+        .btn {
+            display: block; text-decoration: none; text-align: center;
+            color: #fff; font-weight: 800; font-size: .9rem;
+            padding: 14px 16px; border-radius: 14px;
+            background: linear-gradient(120deg, var(--brand) 0%, var(--brand-2) 100%);
+            box-shadow: 0 16px 30px rgba(108, 99, 255, .30);
+            transition: transform .18s, box-shadow .18s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
     </style>
 </head>
 <body>
-    <div class="error-card">
-        <h1>Oops! 😅</h1>
+    <div class="card">
+        <div class="icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 8v5"/><path d="M12 16.5h.01"/><circle cx="12" cy="12" r="9"/>
+            </svg>
+        </div>
+        <h1>Oops! Something went wrong</h1>
         <p>{{ message }}</p>
-        <a href="{{ url_for('index') }}" class="btn-back">&larr; Try Again</a>
+        <a href="{{ url_for('index') }}" class="btn">&larr; Back to upload</a>
     </div>
 </body>
 </html>
