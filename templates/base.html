@@ -28,6 +28,41 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
     {% if google_verification %}<meta name="google-site-verification" content="{{ google_verification }}">{% endif %}
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "{{ url_for('index', _external=True) }}#website",
+          "name": "QuickPDF QR",
+          "url": "{{ url_for('index', _external=True) }}",
+          "inLanguage": "en",
+          "description": "Free PDF to QR code sharing and file conversion tools."
+        },
+        {
+          "@type": "Organization",
+          "@id": "{{ url_for('index', _external=True) }}#org",
+          "name": "QuickPDF QR",
+          "url": "{{ url_for('index', _external=True) }}",
+          "logo": "{{ url_for('static', filename='favicon.svg', _external=True) }}"
+        }
+      ]
+    }
+    </script>
+    {% if active and active != 'home' %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ url_for('index', _external=True) }}" },
+        { "@type": "ListItem", "position": 2, "name": "{{ nav_label }}", "item": "{{ canonical }}" }
+      ]
+    }
+    </script>
+    {% endif %}
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">

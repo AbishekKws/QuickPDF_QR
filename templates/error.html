@@ -92,6 +92,24 @@
         .btn:active { transform: scale(.98); }
         .btn:focus-visible { outline: 3px solid rgba(108, 99, 255, .45); outline-offset: 3px; }
 
+        .helps {
+            margin-top: clamp(18px, 3vw, 26px); padding-top: clamp(14px, 2.4vw, 20px);
+            border-top: 1px solid var(--line); text-align: left;
+        }
+        .helps p {
+            margin: 0 0 8px; max-width: none; font-size: var(--fs-sm);
+            font-weight: 700; color: var(--muted);
+        }
+        .helps a {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            min-height: 44px; padding: 10px 14px; margin-bottom: 6px;
+            border: 1px solid var(--line); border-radius: 12px;
+            color: var(--brand); font-size: var(--fs-sm); font-weight: 700;
+            text-decoration: none; background: #fbfaff;
+        }
+        .helps a:last-child { margin-bottom: 0; }
+        .helps a::after { content: "→"; }
+
         /* Hover lift only on real mouse devices (no sticky hover on phones) */
         @media (hover: hover) {
             .btn:hover { transform: translateY(-2px); box-shadow: 0 20px 36px rgba(108, 99, 255, .36); }
@@ -117,6 +135,13 @@
         <h1>Oops! Something went wrong</h1>
         <p>{{ message }}</p>
         <a href="{{ url_for('index') }}" class="btn">&larr; Back to the tools</a>
+
+        <div class="helps">
+            <p>Or go straight to the right tool:</p>
+            <a href="{{ url_for('pdf_to_qr') }}">Share a PDF with a QR code</a>
+            <a href="{{ url_for('convert') }}">Make a PDF from photos, Excel or text</a>
+            <a href="{{ url_for('convert_from_pdf') }}">Turn a PDF into JPG, Word or Excel</a>
+        </div>
     </div>
 </body>
 </html>

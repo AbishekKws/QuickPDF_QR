@@ -181,6 +181,12 @@
             <h2>Convert to PDF</h2>
             <p class="lead">Choose what you are adding. Images become one A4 page each, spreadsheets become a readable table, and text becomes a clean document.</p>
 
+            <ul class="glance">
+                <li><b>Accepts</b><span>JPG · PNG · WebP · XLSX · CSV · TXT</span></li>
+                <li><b>You get</b><span>one PDF + QR code</span></li>
+                <li><b>Limit</b><span>{{ config.MAX_CONTENT_LENGTH // 1048576 }} MB per upload</span></li>
+            </ul>
+
             <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data"
                   class="tool-form" data-busy="Converting…" data-multi-when="image">
                 <div class="chips" role="radiogroup" aria-label="What are you converting?">
@@ -221,4 +227,20 @@
             <a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF you already have →</a>
         </p>
     </div>
+
+    {% set page_faqs = [
+        {
+            "q": "Which image formats can I turn into a PDF?",
+            "a": "JPG, PNG and WebP images. Each image becomes its own A4 page, scaled to fit with the rotation corrected, so phone photos come out upright."
+        },
+        {
+            "q": "Will Nepali (Devanagari) text show correctly in the PDF?",
+            "a": "Yes. The generated PDF embeds Devanagari and Latin fonts and uses proper text shaping, so Nepali and English both appear as real text instead of empty boxes."
+        },
+        {
+            "q": "Can I convert several files at once?",
+            "a": "With Image mode, yes — all selected photos go into one PDF, one page each. For Excel, CSV and text, one sheet or one text file is converted per PDF so the output stays readable."
+        }
+    ] %}
+    {% include "_faq_section.html" %}
 {% endblock %}

@@ -138,11 +138,22 @@ def _handle_upload():
     return _build_bundle_and_qr(batch_id, uploads)
 
 
+NAV_LABELS = {
+    "home": "Home",
+    "pdf-to-qr": "PDF to QR code",
+    "convert": "Convert to PDF",
+    "convert-from-pdf": "Convert from PDF",
+    "how-it-works": "How it works",
+    "faq": "FAQ",
+}
+
+
 def _render(template, active, **extra):
     """Render a page with the shared layout values."""
     return render_template(
         template,
         active=active,
+        nav_label=NAV_LABELS.get(active, "QuickPDF QR"),
         canonical=url_for(request.endpoint, _external=True),
         google_verification=os.environ.get("GOOGLE_SITE_VERIFICATION", ""),
         **extra,
@@ -367,6 +378,14 @@ def sitemap():
         )
     parts.extend(["</urlset>", ""])
     return Response("\n".join(parts), mimetype="application/xml")
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template(
+        "error.html",
+        message="We could not find that page. It may have expired, moved, or the link may be mistyped.",
+    ), 404
 
 
 @app.errorhandler(413)

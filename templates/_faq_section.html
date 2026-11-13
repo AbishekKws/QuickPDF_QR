@@ -1,0 +1,32 @@
+{% if page_faqs %}
+<section class="section" aria-labelledby="page-faq-title">
+    <div class="section-head">
+        <span class="eyebrow">Questions</span>
+        <h2 class="section-title" id="page-faq-title">Common questions about this tool</h2>
+    </div>
+    <div class="faq-list">
+        {% for item in page_faqs %}
+        <details>
+            <summary>{{ item.q }}</summary>
+            <p>{{ item.a }}</p>
+        </details>
+        {% endfor %}
+    </div>
+    <p class="center-cta"><a class="backlink" href="{{ url_for('faq') }}">See all frequently asked questions →</a></p>
+</section>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for item in page_faqs %}
+    {
+      "@type": "Question",
+      "name": {{ item.q|tojson }},
+      "acceptedAnswer": { "@type": "Answer", "text": {{ item.a|tojson }} }
+    }{% if not loop.last %},{% endif %}
+    {%- endfor %}
+  ]
+}
+</script>
+{% endif %}

@@ -143,6 +143,14 @@
             <summary>Are my files private or searchable?</summary>
             <p>Download pages and file links are marked <code>noindex</code>, so search engines do not list them, and nothing is ever shown publicly. Still, treat the QR code like a shared link: anyone who has it can download the files until it expires.</p>
         </details>
+        <details>
+            <summary>Why is the upload limit {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB?</summary>
+            <p>The app runs as a small serverless function, and the hosting platform only accepts request bodies up to a few megabytes. That cap is set by the platform, not by Python or by the PDF format — a Django or Node version of the same app would hit exactly the same wall. Raising it needs a different upload path (direct-to-storage uploads) or a different host.</p>
+        </details>
+        <details>
+            <summary>What can I do if my file is bigger than the limit?</summary>
+            <p>Split it into parts, compress it first (PDF editors can shrink images), or send the photos separately in Image mode. If you need large uploads, tell us — the fix is uploading straight from the browser to file storage instead of through the app.</p>
+        </details>
     </div>
 
     <p class="center-cta">
@@ -218,6 +226,22 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Download pages and file links are marked noindex, so search engines do not list them. Treat the QR code like a shared link: anyone who has it can download the files until it expires."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the upload limit 4 MB?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The app runs as a small serverless function, and the hosting platform only accepts request bodies up to a few megabytes. That cap is set by the platform, not by Python or the PDF format - a Django or Node version of the same app would hit the same wall. Raising it needs direct-to-storage uploads or a different host."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What can I do if my file is bigger than the limit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Split it into parts, compress it first, or send photos separately in Image mode. If you need large uploads, the fix is uploading straight from the browser to file storage instead of through the app."
           }
         }
       ]

@@ -154,6 +154,12 @@
             <h2>Upload your PDFs</h2>
             <p class="lead">Up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB in total. Files keep their original names, so the download page looks exactly like what you uploaded.</p>
 
+            <ul class="glance">
+                <li><b>Accepts</b><span>PDF · {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB</span></li>
+                <li><b>You get</b><span>QR code + download page</span></li>
+                <li><b>Available for</b><span>{{ config.FILE_TTL_MINUTES }} minutes</span></li>
+            </ul>
+
             <form action="{{ url_for('pdf_to_qr') }}" method="post" enctype="multipart/form-data"
                   class="tool-form" data-busy="Uploading…">
                 <label class="drop" for="pdf_files">
@@ -187,4 +193,20 @@
             <a class="backlink" href="{{ url_for('convert') }}">Need to convert something into a PDF? →</a>
         </p>
     </div>
+
+    {% set page_faqs = [
+        {
+            "q": "Can I upload more than one PDF at a time?",
+            "a": "Yes. Add as many PDFs as fit in the total size limit; each one is listed separately on the download page and there is one extra button for the whole batch as a ZIP. Original file names are kept."
+        },
+        {
+            "q": "Does the QR code stop working after a while?",
+            "a": "Yes. Uploads, ZIPs and QR images are deleted after about " ~ config.FILE_TTL_MINUTES ~ " minutes, so save the files or print the code before then. After that the scan shows an expiry message."
+        },
+        {
+            "q": "What if my PDF is larger than " ~ (config.MAX_CONTENT_LENGTH // 1048576) ~ " MB?",
+            "a": "The limit comes from the hosting platform's request size, not from the PDF format. Split the file into a few smaller PDFs, or compress it in any PDF editor and upload again."
+        }
+    ] %}
+    {% include "_faq_section.html" %}
 {% endblock %}

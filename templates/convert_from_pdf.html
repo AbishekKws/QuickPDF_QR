@@ -181,6 +181,12 @@
             <h2>Convert from a PDF</h2>
             <p class="lead">Choose what you want to get, add a PDF of up to 20 pages, and we produce the files ready to download.</p>
 
+            <ul class="glance">
+                <li><b>Accepts</b><span>PDF · up to 20 pages</span></li>
+                <li><b>You get</b><span>JPG · TXT · DOCX · XLSX</span></li>
+                <li><b>Limit</b><span>{{ config.MAX_CONTENT_LENGTH // 1048576 }} MB per upload</span></li>
+            </ul>
+
             <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data"
                   class="tool-form" data-busy="Converting…">
                 <div class="chips" role="radiogroup" aria-label="What do you want to get?">
@@ -220,4 +226,20 @@
             <a class="backlink" href="{{ url_for('convert') }}">Need it the other way? Images, Excel or text → PDF →</a>
         </p>
     </div>
+
+    {% set page_faqs = [
+        {
+            "q": "Why is the Word or Excel file empty?",
+            "a": "Text, Word and Excel need a text layer inside the PDF. If the PDF was made from scans or photos there is nothing to extract — choose Images instead, which renders every page as a picture and always works."
+        },
+        {
+            "q": "How many pages can I convert?",
+            "a": "Up to 20 pages per PDF, and the file must be under " ~ (config.MAX_CONTENT_LENGTH // 1048576) ~ " MB. Password-protected PDFs are rejected because they cannot be opened without the password."
+        },
+        {
+            "q": "Does the converted file keep the original layout?",
+            "a": "The Images option keeps the layout exactly, because each page is rendered as a picture. Word and Excel are rebuilt from the text, so tables and columns become plain lines and cells rather than the original design."
+        }
+    ] %}
+    {% include "_faq_section.html" %}
 {% endblock %}

@@ -124,6 +124,47 @@
     }
     .icon-chip svg, .feat-icon svg { width: 46%; height: auto; }
 
+    /* ---------- Card meta + chooser ---------- */
+    .tool-card p.card-for {
+        flex: 0 0 auto; margin: var(--space-2) 0 0;
+        font-size: .68rem; font-weight: 800; letter-spacing: .08em;
+        text-transform: uppercase; color: var(--brand) !important;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+    }
+    .meta {
+        list-style: none; margin: 0 0 var(--space-2); padding: 0;
+        display: grid; gap: 6px; width: 100%;
+    }
+    .meta li {
+        display: flex; gap: 6px; flex-wrap: wrap;
+        font-size: var(--fs-sm); font-weight: 600; color: var(--ink-soft);
+    }
+    .meta b {
+        flex: 0 0 auto; font-size: .64rem; letter-spacing: .08em;
+        text-transform: uppercase; color: #9aa0b3; padding-top: 2px;
+    }
+    .chooser { display: grid; gap: var(--space-2); }
+    .chooser a {
+        display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow-sm); text-decoration: none; color: var(--ink-soft);
+        font-size: var(--fs-base);
+        transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+    .chooser b { color: var(--ink); font-weight: 700; }
+    .chooser .arrow {
+        flex: 0 0 auto; padding: 7px 14px; border-radius: 999px;
+        background: var(--brand-100); color: var(--brand);
+        font-size: var(--fs-sm); font-weight: 800; white-space: nowrap;
+    }
+    @media (hover: hover) {
+        .chooser a:hover { border-color: #d9d6ff; box-shadow: var(--shadow); transform: translateY(-2px); }
+    }
+    @media (max-width: 640px) {
+        .chooser a { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+    }
+
     /* ---------- Steps ---------- */
     .steps {
         list-style: none; margin: 0; padding: 0;
@@ -217,17 +258,17 @@
 {% block content %}
     <section class="hero">
         <div class="hero-text">
-            <span class="eyebrow">PDF · images · Office · text</span>
-            <h1>PDF to QR code <span class="grad">and back</span> — pick a tool</h1>
-            <p class="lede">One small set of tools for sharing and converting files: hand out a PDF with a single scan, build a PDF from almost anything, or pull a PDF apart into images, Word and Excel.</p>
+            <span class="eyebrow">Free · no sign-up · files auto-delete</span>
+            <h1>Share any file with <span class="grad">one QR scan</span></h1>
+            <p class="lede">No app to install and no account to create. Upload a PDF and get a QR code, turn photos, Excel or text into a PDF, or pull a PDF back into JPG, Word and Excel — all in one place.</p>
             <div class="cta-row">
-                <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">Upload a PDF</a>
+                <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">PDF → QR code</a>
                 <a class="btn btn-ghost" href="{{ url_for('convert') }}">Convert a file</a>
             </div>
             <ul class="hero-chips">
-                <li>Up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB per batch</li>
-                <li>Nepali text ready</li>
-                <li>Auto-deleted in {{ config.FILE_TTL_MINUTES }} minutes</li>
+                <li>Up to {{ config.MAX_CONTENT_LENGTH // 1048576 }} MB per upload</li>
+                <li>Works with any phone camera</li>
+                <li>Deleted in {{ config.FILE_TTL_MINUTES }} minutes</li>
             </ul>
         </div>
 
@@ -295,9 +336,14 @@
                         <rect x="3" y="14" width="7" height="7" rx="1.5" opacity=".75"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
                     </svg>
                 </span>
+                <p class="card-for">You already have a PDF</p>
                 <h2>PDF → QR code</h2>
                 <p>Upload one PDF or a batch and share it with a single scan. Each file can be downloaded on its own, or all together as a ZIP.</p>
-                <span class="go">Open the tool →</span>
+                <ul class="meta">
+                    <li><b>Accepts</b> PDF</li>
+                    <li><b>You get</b> QR + download page</li>
+                </ul>
+                <span class="go">Upload a PDF →</span>
             </a>
 
             <a class="tool-card" href="{{ url_for('convert') }}">
@@ -307,9 +353,14 @@
                         <path d="M14 3v4h4"/><path d="M9 13h6"/><path d="M9 17h4"/>
                     </svg>
                 </span>
+                <p class="card-for">You have photos or Excel</p>
                 <h2>Anything → PDF</h2>
                 <p>Photos, Excel sheets, CSV files or plain text become a clean PDF — then get a QR code for it, just like any upload.</p>
-                <span class="go">Open the tool →</span>
+                <ul class="meta">
+                    <li><b>Accepts</b> JPG · PNG · WebP · XLSX · CSV · TXT</li>
+                    <li><b>You get</b> one tidy PDF</li>
+                </ul>
+                <span class="go">Make a PDF →</span>
             </a>
 
             <a class="tool-card" href="{{ url_for('convert_from_pdf') }}">
@@ -319,9 +370,35 @@
                         <path d="M14 3v5h5"/><path d="M12 11v6"/><path d="M9.5 14.5 12 17l2.5-2.5"/>
                     </svg>
                 </span>
+                <p class="card-for">You have a PDF to convert</p>
                 <h2>PDF → anything</h2>
                 <p>Render every page as a JPG, or pull the text out as a TXT, Word (DOCX) or Excel (XLSX) file, ready to edit.</p>
-                <span class="go">Open the tool →</span>
+                <ul class="meta">
+                    <li><b>Accepts</b> PDF (up to 20 pages)</li>
+                    <li><b>You get</b> JPG · TXT · DOCX · XLSX</li>
+                </ul>
+                <span class="go">Convert a PDF →</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="chooser-title">
+        <div class="section-head">
+            <span class="eyebrow">Not sure?</span>
+            <h2 class="section-title" id="chooser-title">Start from the file you have</h2>
+        </div>
+        <div class="chooser">
+            <a href="{{ url_for('pdf_to_qr') }}">
+                <span><b>“I have a PDF to share.”</b> Print a QR code for it.</span>
+                <span class="arrow">PDF → QR</span>
+            </a>
+            <a href="{{ url_for('convert') }}">
+                <span><b>“I have photos or a spreadsheet.”</b> Turn them into a PDF.</span>
+                <span class="arrow">To PDF</span>
+            </a>
+            <a href="{{ url_for('convert_from_pdf') }}">
+                <span><b>“I have a PDF but need Word or JPG.”</b> Pull it apart.</span>
+                <span class="arrow">From PDF</span>
             </a>
         </div>
     </section>
