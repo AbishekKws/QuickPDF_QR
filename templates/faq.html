@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}QuickPDF QR FAQ – Limits, Privacy and Expiring Links{% endblock %}
-{% block description %}Answers about file size limits, QR link expiry, supported formats, Nepali text and password-protected PDFs in QuickPDF QR.{% endblock %}
+{% block title %}FAQ – QR File Transfer, Limits and Privacy | QuickPDF QR{% endblock %}
+{% block description %}Answers about cable-free QR file transfer from computer to phone, upload limits, supported formats, link expiry, Nepali text and password-protected PDFs.{% endblock %}
 {% block keywords %}<meta name="keywords" content="quickpdf qr faq, pdf qr code limits, qr link expiry, supported file formats">{% endblock %}
 
 {% block head_extra %}
@@ -151,6 +151,10 @@
             <summary>What can I do if my file is bigger than the limit?</summary>
             <p>Split it into parts, compress it first (PDF editors can shrink images), or send the photos separately in Image mode. If you need large uploads, tell us — the fix is uploading straight from the browser to file storage instead of through the app.</p>
         </details>
+        <details>
+            <summary>Can I transfer files from my computer to my phone without a cable or pendrive?</summary>
+            <p>Yes — that is what the QR code is for. Upload the file on your computer, then open the phone camera and scan the code on the screen. The download page opens on the phone over mobile data or Wi-Fi, and you can save each file or the whole ZIP. No USB cable, no pendrive, no Bluetooth pairing and no app install.</p>
+        </details>
     </div>
 
     <p class="center-cta">
@@ -242,6 +246,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Split it into parts, compress it first, or send photos separately in Image mode. If you need large uploads, the fix is uploading straight from the browser to file storage instead of through the app."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I transfer files from my computer to my phone without a cable or pendrive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Upload the file on your computer, then scan the QR code with the phone camera. The download page opens on the phone over mobile data or Wi-Fi and you can save each file or the whole ZIP - no USB cable, pendrive, Bluetooth pairing or app install."
           }
         }
       ]

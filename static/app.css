@@ -302,6 +302,32 @@ h2.section-title { margin: 0; font-size: clamp(1.25rem, 3.2vw, 1.65rem); font-we
 .feat h3 { margin: 0 0 6px; font-size: .88rem; font-weight: 800; letter-spacing: -.01em; }
 .feat p { margin: 0; font-size: .81rem; font-weight: 600; color: var(--muted); line-height: 1.6; }
 
+/* ---------- device transfer flow ---------- */
+.section-sub {
+    margin: 8px auto 0; max-width: 60ch; text-align: center;
+    color: var(--muted); font-size: .88rem; font-weight: 600; line-height: 1.6;
+}
+.flow {
+    display: grid; gap: 10px; align-items: center;
+    grid-template-columns: 1fr; margin-top: 18px;
+}
+@media (min-width: 760px) {
+    .flow { grid-template-columns: 1fr auto 1fr auto 1fr; }
+}
+.flow-step {
+    display: grid; justify-items: center; gap: 5px; text-align: center;
+    background: #fff; border: 1px solid var(--line); border-radius: 18px;
+    padding: 18px 16px; box-shadow: var(--shadow-md);
+}
+.flow-step .ico {
+    width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
+    background: rgba(108, 99, 255, .1); color: var(--brand); margin-bottom: 2px;
+}
+.flow-step b { font-size: .87rem; font-weight: 800; letter-spacing: -.01em; }
+.flow-step span { font-size: .75rem; font-weight: 600; color: var(--muted); line-height: 1.5; }
+.flow-arrow { display: grid; place-items: center; color: #c3c7d6; font-weight: 800; font-size: 1rem; }
+@media (max-width: 759px) { .flow-arrow { transform: rotate(90deg); } }
+
 /* ---------- FAQ ---------- */
 .faq-list { max-width: 800px; margin: 0 auto; }
 details {
