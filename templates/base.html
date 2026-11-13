@@ -109,7 +109,7 @@
 
         --header-h: clamp(60px, 8vw, 72px);
         --page-top: clamp(10px, 1.8vw, 18px);   /* gap between navbar and page content: change only this */
-        --shell-max: clamp(1180px, 86vw, 1600px);
+        --shell-max: clamp(1180px, 92vw, 1440px);
     }
 
     /* ---------- Reset / fundamentals ---------- */
@@ -420,6 +420,58 @@
 
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
     {% block head_extra %}{% endblock %}
+
+    <style>
+    /* ==========================================================
+       One width and one alignment for every page:
+       headings and copy start at the left edge of the container,
+       cards fill the container width instead of shrinking to the middle.
+       ========================================================== */
+    .page-head, .hero {
+        max-width: none;
+        margin: 0 0 var(--space-4);
+        padding-top: 0;
+        text-align: left;
+    }
+    .page-head h1, .hero h1 {
+        margin: 0 0 var(--space-2);
+        max-width: 26ch;
+    }
+    .page-head .lede, .hero .lede {
+        margin: 0;
+        max-width: 70ch;
+        text-align: left;
+    }
+    .hero .lede { margin-bottom: var(--space-3); }
+    .page-head .eyebrow, .hero .eyebrow { margin-bottom: var(--space-2); }
+    .hero .cta-row, .hero .hero-chips { justify-content: flex-start; }
+    .hero-chips { margin-left: 0; }
+
+    .section-head, .group-head {
+        text-align: left;
+        margin-bottom: var(--space-3);
+    }
+    .section-sub {
+        margin: 6px 0 0;
+        max-width: 72ch;
+        text-align: left;
+    }
+    .center-cta { justify-content: flex-start; text-align: left; }
+
+    .tool-panel { max-width: min(100%, 1040px); margin-inline: auto; }
+    .faq-list { max-width: min(100%, 1040px); margin-inline: 0; }
+
+    /* Tool pages: the heading lines up with the edge of the form card. */
+    main.shell:has(.tool-panel) .page-head {
+        max-width: min(100%, 1040px);
+        margin-inline: auto;
+    }
+
+    @media (max-width: 760px) {
+        .page-head h1, .hero h1 { max-width: none; }
+        .tool-panel { max-width: 100%; }
+    }
+    </style>
 </head>
 <body data-limit-mb="{{ config.MAX_CONTENT_LENGTH // 1048576 }}">
     <a class="skip-link" href="#main">Skip to content</a>
