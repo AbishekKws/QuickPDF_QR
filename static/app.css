@@ -399,18 +399,6 @@ details p { margin: 10px 0 2px; font-size: .82rem; font-weight: 600; color: var(
 .backlink:hover { color: var(--ink); }
 .center-cta { margin: 22px 0 0; text-align: center; }
 
-/* ---------- footer ---------- */
-footer.site {
-    margin-top: clamp(38px, 5vw, 58px);
-    padding: 20px 0 clamp(24px, 4vw, 34px);
-    border-top: 1px solid var(--line);
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
-}
-footer.site p { margin: 0; font-size: .74rem; font-weight: 700; color: #99a0b3; }
-.foot-links { display: flex; flex-wrap: wrap; gap: 14px; }
-.foot-links a { font-size: .74rem; font-weight: 800; color: var(--ink-soft); text-decoration: none; }
-.foot-links a:hover { color: var(--brand); }
-
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }

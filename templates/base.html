@@ -258,17 +258,47 @@
 
     /* ---------- Footer ---------- */
     footer.site {
-        display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-        gap: var(--space-2) var(--space-4);
-        padding-block: var(--space-4);
-        padding-bottom: max(var(--space-4), env(safe-area-inset-bottom));
+        display: block;
+        margin-top: var(--space-5);
+        padding-block: var(--space-4) max(var(--space-4), env(safe-area-inset-bottom));
         border-top: 1px solid var(--line);
         color: var(--ink-soft); font-size: var(--fs-sm);
     }
-    footer.site p { margin: 0; }
-    .foot-links { display: flex; flex-wrap: wrap; gap: 6px var(--space-3); }
-    .foot-links a { color: var(--ink-soft); text-decoration: none; padding: 6px 0; }
-    .foot-links a:hover { color: var(--brand); }
+    .foot-top {
+        display: grid; gap: var(--space-4); align-items: start;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    }
+    .foot-brand .brand { margin-bottom: 10px; }
+    .foot-tag {
+        margin: 0; max-width: 36ch;
+        color: var(--ink-soft); font-size: var(--fs-sm); font-weight: 600; line-height: 1.65;
+    }
+    .foot-cols { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); justify-content: flex-end; }
+    .foot-col { display: grid; gap: 5px; min-width: 130px; align-content: start; }
+    .foot-col h2 {
+        margin: 0 0 3px; font-size: .67rem; font-weight: 800;
+        letter-spacing: .1em; text-transform: uppercase; color: #9aa0b3;
+    }
+    .foot-col a {
+        color: var(--ink-soft); text-decoration: none;
+        font-size: .82rem; font-weight: 600; padding: 3px 0; width: fit-content;
+    }
+    .foot-col a:hover { color: var(--brand); }
+    .foot-bottom {
+        margin-top: var(--space-4); padding-top: var(--space-3);
+        border-top: 1px solid var(--line);
+        display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+        gap: 8px var(--space-4);
+    }
+    .foot-bottom p { margin: 0; font-size: .74rem; font-weight: 600; color: #99a0b3; }
+    .credit a { color: var(--brand); font-weight: 800; text-decoration: none; }
+    .credit a:hover { text-decoration: underline; }
+
+    @media (max-width: 760px) {
+        .foot-top { grid-template-columns: 1fr; gap: var(--space-3); }
+        .foot-cols { justify-content: flex-start; gap: var(--space-3) var(--space-5); }
+        .foot-bottom { flex-direction: column; align-items: flex-start; }
+    }
 
     /* ==========================================================
        Reusable building blocks for ALL pages
@@ -363,7 +393,6 @@
         .card { padding: var(--space-3); }
         .btn { width: 100%; }
         .row .btn { width: auto; flex: 1 1 auto; }
-        footer.site { flex-direction: column; align-items: flex-start; }
         .pill-text { display: none; }
         .pill::after { content: "Free"; }
         .pill { padding: 7px 12px; }
@@ -432,14 +461,44 @@
     </main>
 
     <footer class="shell site">
-        <p>QuickPDF QR · files are deleted after {{ config.get('FILE_TTL_MINUTES', 30) }} minutes</p>
-        <div class="foot-links">
-            <a href="{{ url_for('transfer') }}">Transfer files</a>
-            <a href="{{ url_for('convert') }}">Convert files</a>
-            <a href="{{ url_for('convert_to_pdf') }}">To PDF</a>
-            <a href="{{ url_for('convert_from_pdf') }}">From PDF</a>
-            <a href="{{ url_for('faq') }}">FAQ</a>
-            <a href="{{ url_for('sitemap') }}">Sitemap</a>
+        <div class="foot-top">
+            <div class="foot-brand">
+                <a class="brand" href="{{ url_for('index') }}">
+                    <span class="mark">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <rect x="2" y="2" width="7" height="7" rx="1.6"/>
+                            <rect x="15" y="2" width="7" height="7" rx="1.6" opacity=".8"/>
+                            <rect x="2" y="15" width="7" height="7" rx="1.6" opacity=".8"/>
+                            <rect x="15" y="15" width="3" height="3" rx=".8"/>
+                            <rect x="19" y="15" width="3" height="3" rx=".8"/>
+                            <rect x="15" y="19" width="3" height="3" rx=".8"/>
+                            <rect x="19" y="19" width="3" height="3" rx=".8"/>
+                        </svg>
+                    </span>
+                    <span class="brand-name">QuickPDF <em>QR</em></span>
+                </a>
+                <p class="foot-tag">Send files from your computer to any phone with one QR scan. No cable, no pendrive, no app — and the files delete themselves.</p>
+            </div>
+
+            <nav class="foot-cols" aria-label="Footer">
+                <div class="foot-col">
+                    <h2>Tools</h2>
+                    <a href="{{ url_for('transfer') }}">Transfer files</a>
+                    <a href="{{ url_for('convert') }}">Convert files</a>
+                    <a href="{{ url_for('convert_to_pdf') }}">To PDF</a>
+                    <a href="{{ url_for('convert_from_pdf') }}">From PDF</a>
+                </div>
+                <div class="foot-col">
+                    <h2>Learn</h2>
+                    <a href="{{ url_for('how_it_works') }}">How it works</a>
+                    <a href="{{ url_for('faq') }}">FAQ</a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="foot-bottom">
+            <p>© 2026 QuickPDF QR · files are deleted after {{ config.FILE_TTL_MINUTES }} minutes</p>
+            <p class="credit">Developed by <a href="https://abishekkhawas.com.np" target="_blank" rel="noopener">Abishek Khawas</a></p>
         </div>
     </footer>
 
