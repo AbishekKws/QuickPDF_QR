@@ -413,9 +413,8 @@
             </a>
 
             <nav class="nav" id="site-nav" aria-label="Main">
-                <a href="{{ url_for('pdf_to_qr') }}" {% if active == 'pdf-to-qr' %}aria-current="page"{% endif %}>PDF → QR</a>
-                <a href="{{ url_for('convert') }}" {% if active == 'convert' %}aria-current="page"{% endif %}>To PDF</a>
-                <a href="{{ url_for('convert_from_pdf') }}" {% if active == 'convert-from-pdf' %}aria-current="page"{% endif %}>From PDF</a>
+                <a href="{{ url_for('transfer') }}" {% if active == 'transfer' %}aria-current="page"{% endif %}>Transfer</a>
+                <a href="{{ url_for('convert') }}" {% if active in ['convert', 'convert-to-pdf', 'convert-from-pdf'] %}aria-current="page"{% endif %}>Convert</a>
                 <a href="{{ url_for('how_it_works') }}" {% if active == 'how-it-works' %}aria-current="page"{% endif %}>How it works</a>
                 <a href="{{ url_for('faq') }}" {% if active == 'faq' %}aria-current="page"{% endif %}>FAQ</a>
             </nav>
@@ -435,8 +434,9 @@
     <footer class="shell site">
         <p>QuickPDF QR · files are deleted after {{ config.get('FILE_TTL_MINUTES', 30) }} minutes</p>
         <div class="foot-links">
-            <a href="{{ url_for('pdf_to_qr') }}">PDF → QR</a>
-            <a href="{{ url_for('convert') }}">To PDF</a>
+            <a href="{{ url_for('transfer') }}">Transfer files</a>
+            <a href="{{ url_for('convert') }}">Convert files</a>
+            <a href="{{ url_for('convert_to_pdf') }}">To PDF</a>
             <a href="{{ url_for('convert_from_pdf') }}">From PDF</a>
             <a href="{{ url_for('faq') }}">FAQ</a>
             <a href="{{ url_for('sitemap') }}">Sitemap</a>

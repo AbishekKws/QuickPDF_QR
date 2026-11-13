@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Convert Files to PDF and Back – Free Online Converter | QuickPDF QR{% endblock %}
+{% block description %}Convert images, Excel, CSV and text into a PDF, or turn a PDF into JPG, Word, Excel and text. Pick a tool, upload the file and share the result by QR code. Free, no sign-up.{% endblock %}
+{% block keywords %}<meta name="keywords" content="file converter online, image to pdf, jpg to pdf, excel to pdf, csv to pdf, text to pdf, pdf to jpg, pdf to word, pdf to excel, free pdf converter">{% endblock %}
+
+{% block content %}
+    <section class="page-head">
+        <span class="eyebrow">Conversion tools</span>
+        <h1>Convert files to PDF <span class="grad">and back</span></h1>
+        <p class="lede">Six small tools in two directions. Pick the one that matches your file, upload it, and the result comes with a QR code for sending it to a phone.</p>
+    </section>
+
+    <section class="section" aria-labelledby="to-pdf-title" style="padding-top: 0;">
+        <div class="group-head">
+            <h2 class="section-title" id="to-pdf-title">Into a PDF</h2>
+            <p class="section-sub">Photos, sheets and text become one clean PDF document.</p>
+        </div>
+        <div class="tile-grid">
+            <a class="tile" href="{{ url_for('convert_to_pdf', mode='image') }}">
+                <span class="t-ico img">JPG</span>
+                <h3>Images → PDF</h3>
+                <p>JPG, PNG and WebP photos, one A4 page each, rotation corrected.</p>
+                <span class="t-go">Start →</span>
+            </a>
+            <a class="tile" href="{{ url_for('convert_to_pdf', mode='sheet') }}">
+                <span class="t-ico sheet">XLSX</span>
+                <h3>Excel / CSV → PDF</h3>
+                <p>Turn the first sheet of a spreadsheet into a readable table.</p>
+                <span class="t-go">Start →</span>
+            </a>
+            <a class="tile" href="{{ url_for('convert_to_pdf', mode='text') }}">
+                <span class="t-ico text">TXT</span>
+                <h3>Text → PDF</h3>
+                <p>Plain text and Markdown become a clean, printable document.</p>
+                <span class="t-go">Start →</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="from-pdf-title">
+        <div class="group-head">
+            <h2 class="section-title" id="from-pdf-title">Out of a PDF</h2>
+            <p class="section-sub">Pull a PDF apart into pictures or editable text. Up to 20 pages per file.</p>
+        </div>
+        <div class="tile-grid">
+            <a class="tile" href="{{ url_for('convert_from_pdf', mode='images') }}">
+                <span class="t-ico pdf">JPG</span>
+                <h3>PDF → JPG images</h3>
+                <p>Every page rendered as a JPG picture — works on scanned PDFs too.</p>
+                <span class="t-go">Start →</span>
+            </a>
+            <a class="tile" href="{{ url_for('convert_from_pdf', mode='text') }}">
+                <span class="t-ico text">TXT</span>
+                <h3>PDF → Text</h3>
+                <p>Extract the text layer into a plain TXT file you can copy from.</p>
+                <span class="t-go">Start →</span>
+            </a>
+            <a class="tile" href="{{ url_for('convert_from_pdf', mode='docx') }}">
+                <span class="t-ico word">DOCX</span>
+                <h3>PDF → Word</h3>
+                <p>Editable Word document built from the text, line by line.</p>
+                <span class="t-go">Start →</span>
+            </a>
+            <a class="tile" href="{{ url_for('convert_from_pdf', mode='xlsx') }}">
+                <span class="t-ico excel">XLSX</span>
+                <h3>PDF → Excel</h3>
+                <p>Text rows and page numbers into a spreadsheet, ready to sort.</p>
+                <span class="t-go">Start →</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="section" aria-labelledby="convert-note-title">
+        <div class="card">
+            <h2 id="convert-note-title">How the conversion works</h2>
+            <p class="lead">Everything runs on the server in one step: choose a format, add your file, and the converted document is ready to download or scan. Converted PDFs embed Devanagari and Latin fonts, so Nepali and English both render properly.</p>
+            <ul class="glance">
+                <li><b>Upload limit</b><span>{{ config.MAX_CONTENT_LENGTH // 1048576 }} MB</span></li>
+                <li><b>PDF pages</b><span>up to 20 per file</span></li>
+                <li><b>Kept for</b><span>{{ config.FILE_TTL_MINUTES }} minutes</span></li>
+            </ul>
+            <p class="center-cta">
+                <a class="backlink" href="{{ url_for('transfer') }}">Just need to send a file to a phone? →</a>
+                <a class="backlink" href="{{ url_for('faq') }}">Conversion questions →</a>
+            </p>
+        </div>
+    </section>
+{% endblock %}

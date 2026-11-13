@@ -113,15 +113,15 @@
     <div class="faq-list">
         <details>
             <summary>How do I share a PDF with a QR code?</summary>
-            <p>Open <a href="{{ url_for('pdf_to_qr') }}">PDF → QR</a>, choose your PDFs and press “Upload &amp; generate QR”. A QR code appears instantly. Print it, put it on a notice board or send it in chat — whoever scans it opens a download page with every file and a ZIP of the whole batch.</p>
+            <p>Open <a href="{{ url_for('transfer') }}">Transfer</a>, choose your PDFs and press “Upload &amp; generate QR”. A QR code appears instantly. Print it, put it on a notice board or send it in chat — whoever scans it opens a download page with every file and a ZIP of the whole batch.</p>
         </details>
         <details>
             <summary>Can I convert images, Excel or text into a PDF here?</summary>
-            <p>Yes. Open <a href="{{ url_for('convert') }}">Anything → PDF</a>, pick Image, Excel/CSV or Text, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
+            <p>Yes. Open <a href="{{ url_for('convert_to_pdf') }}">Images / Excel / text → PDF</a>, pick Image, Excel/CSV or Text, choose your files and you get a PDF plus a QR code. JPG, PNG, WebP, XLSX, XLSM, CSV, TXT and Markdown are supported.</p>
         </details>
         <details>
             <summary>Can I turn a PDF back into images, Word or Excel?</summary>
-            <p>Yes. In <a href="{{ url_for('convert_from_pdf') }}">PDF → anything</a>, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text — shared through the same QR download page.</p>
+            <p>Yes. In <a href="{{ url_for('convert_from_pdf') }}">PDF → images, Word, Excel</a>, pick Images, Text, Word or Excel and choose a PDF (up to 20 pages). You get one JPG per page, or a TXT, DOCX or XLSX file with the extracted text — shared through the same QR download page.</p>
         </details>
         <details>
             <summary>Why does text extraction fail on some PDFs?</summary>
@@ -158,7 +158,7 @@
     </div>
 
     <p class="center-cta">
-        <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">Upload a PDF</a>
+        <a class="btn btn-primary" href="{{ url_for('transfer') }}">Transfer a file</a>
     </p>
 {% endblock %}
 

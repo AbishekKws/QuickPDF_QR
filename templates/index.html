@@ -262,7 +262,7 @@
             <h1>Share any file with <span class="grad">one QR scan</span></h1>
             <p class="lede">Move a file from your computer to any phone with one QR scan — no cable, no pendrive, no app. Convert photos, Excel or text into a PDF, or pull a PDF back into JPG, Word and Excel, all in one place.</p>
             <div class="cta-row">
-                <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">PDF → QR code</a>
+                <a class="btn btn-primary" href="{{ url_for('transfer') }}">Transfer a file</a>
                 <a class="btn btn-ghost" href="{{ url_for('convert') }}">Convert a file</a>
             </div>
             <ul class="hero-chips">
@@ -329,7 +329,7 @@
         </div>
 
         <div class="tool-grid">
-            <a class="tool-card" href="{{ url_for('pdf_to_qr') }}">
+            <a class="tool-card" href="{{ url_for('transfer') }}">
                 <span class="icon-chip">
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" opacity=".75"/>
@@ -346,7 +346,7 @@
                 <span class="go">Upload a PDF →</span>
             </a>
 
-            <a class="tool-card" href="{{ url_for('convert') }}">
+            <a class="tool-card" href="{{ url_for('convert_to_pdf') }}">
                 <span class="icon-chip">
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M14 3H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7l-4-4z"/>
@@ -413,7 +413,7 @@
                 <span>Download one file or the whole ZIP</span>
             </div>
         </div>
-        <p class="center-cta"><a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">Send a file to your phone</a></p>
+        <p class="center-cta"><a class="btn btn-primary" href="{{ url_for('transfer') }}">Send a file to your phone</a></p>
         <p class="section-sub">Works over any mobile network — the phone does not need to be on the same Wi-Fi, and nothing is installed.</p>
     </section>
 
@@ -423,13 +423,13 @@
             <h2 class="section-title" id="chooser-title">Start from the file you have</h2>
         </div>
         <div class="chooser">
-            <a href="{{ url_for('pdf_to_qr') }}">
+            <a href="{{ url_for('transfer') }}">
                 <span><b>“I have a PDF to share.”</b> Print a QR code for it.</span>
-                <span class="arrow">PDF → QR</span>
+                <span class="arrow">Transfer</span>
             </a>
             <a href="{{ url_for('convert') }}">
                 <span><b>“I have photos or a spreadsheet.”</b> Turn them into a PDF.</span>
-                <span class="arrow">To PDF</span>
+                <span class="arrow">Convert</span>
             </a>
             <a href="{{ url_for('convert_from_pdf') }}">
                 <span><b>“I have a PDF but need Word or JPG.”</b> Pull it apart.</span>
@@ -503,6 +503,9 @@
                 <p>Downloads keep the name you uploaded — no renamed or random file names.</p>
             </article>
         </div>
-        <p class="center-cta"><a class="backlink" href="{{ url_for('faq') }}">Read the frequently asked questions →</a></p>
+        <p class="center-cta">
+            <a class="backlink" href="{{ url_for('convert') }}">Browse all conversion tools →</a>
+            <a class="backlink" href="{{ url_for('faq') }}">Read the frequently asked questions →</a>
+        </p>
     </section>
 {% endblock %}

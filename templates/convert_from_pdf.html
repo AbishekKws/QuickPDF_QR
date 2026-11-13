@@ -190,10 +190,10 @@
             <form action="{{ url_for('convert_from_pdf') }}" method="post" enctype="multipart/form-data"
                   class="tool-form" data-busy="Converting…">
                 <div class="chips" role="radiogroup" aria-label="What do you want to get?">
-                    <label class="chip"><input type="radio" name="mode" value="images" checked><span>Images</span></label>
-                    <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
-                    <label class="chip"><input type="radio" name="mode" value="docx"><span>Word</span></label>
-                    <label class="chip"><input type="radio" name="mode" value="xlsx"><span>Excel</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="images" {% if default_mode|default('images') == 'images' %}checked{% endif %}><span>Images</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="text" {% if default_mode|default('images') == 'text' %}checked{% endif %}><span>Text</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="docx" {% if default_mode|default('images') == 'docx' %}checked{% endif %}><span>Word</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="xlsx" {% if default_mode|default('images') == 'xlsx' %}checked{% endif %}><span>Excel</span></label>
                 </div>
 
                 <label class="drop" for="frompdf_files">
@@ -223,7 +223,8 @@
         </section>
 
         <p class="center-cta">
-            <a class="backlink" href="{{ url_for('convert') }}">Need it the other way? Images, Excel or text → PDF →</a>
+            <a class="backlink" href="{{ url_for('convert') }}">← All conversion tools</a>
+            <a class="backlink" href="{{ url_for('convert_to_pdf') }}">Images, Excel or text → PDF →</a>
         </p>
     </div>
 

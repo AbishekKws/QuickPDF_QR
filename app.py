@@ -140,8 +140,9 @@ def _handle_upload():
 
 NAV_LABELS = {
     "home": "Home",
-    "pdf-to-qr": "PDF to QR code",
-    "convert": "Convert to PDF",
+    "transfer": "Transfer",
+    "convert": "Convert",
+    "convert-to-pdf": "Convert to PDF",
     "convert-from-pdf": "Convert from PDF",
     "how-it-works": "How it works",
     "faq": "FAQ",
@@ -169,14 +170,20 @@ def index():
     return _render("index.html", "home")
 
 
-@app.route("/pdf-to-qr", methods=["GET", "POST"])
-def pdf_to_qr():
-    """Dedicated page for sharing PDFs with a QR code."""
+@app.route("/transfer", methods=["GET", "POST"])
+def transfer():
+    """Cable-free computer-to-phone page: upload files, share them by QR."""
     if request.method == "POST":
         response = _handle_upload()
         if response is not None:
             return response
-    return _render("pdf_to_qr.html", "pdf-to-qr")
+    return _render("transfer.html", "transfer")
+
+
+@app.route("/pdf-to-qr")
+def pdf_to_qr_legacy():
+    """Old URL kept alive so shared links and search results keep working."""
+    return redirect(url_for("transfer"), code=301)
 
 
 @app.route("/how-it-works")
@@ -192,17 +199,26 @@ def faq():
 CONVERT_MODES = {"image", "sheet", "text"}
 
 
-@app.route("/convert", methods=["GET", "POST"])
+@app.route("/convert")
 def convert():
+    """Hub page that lists every conversion tool."""
+    return _render("convert.html", "convert")
+
+
+@app.route("/convert/to-pdf", methods=["GET", "POST"])
+def convert_to_pdf():
     """Convert images, spreadsheets or text into a PDF and share it by QR."""
     if request.method == "GET":
-        return _render("convert_to_pdf.html", "convert")
+        mode = request.args.get("mode", "image")
+        if mode not in CONVERT_MODES:
+            mode = "image"
+        return _render("convert_to_pdf.html", "convert-to-pdf", default_mode=mode)
 
     mode = request.form.get("mode", "image")
     files = [f for f in request.files.getlist("files") if f and f.filename]
 
     if mode not in CONVERT_MODES or not files:
-        return redirect(url_for("convert"))
+        return redirect(url_for("convert_to_pdf"))
 
     cleanup_expired_files(force=True)
     first_name = _safe_name(files[0].filename)
@@ -246,11 +262,14 @@ def _store_upload(batch_id, original_name, data):
     return {"original": original_name, "stored": stored}
 
 
-@app.route("/convert-from-pdf", methods=["GET", "POST"])
+@app.route("/convert/from-pdf", methods=["GET", "POST"])
 def convert_from_pdf():
     """Turn a PDF back into images, text, Word or Excel and share it by QR."""
     if request.method == "GET":
-        return _render("convert_from_pdf.html", "convert-from-pdf")
+        mode = request.args.get("mode", "images")
+        if mode not in REVERSE_MODES:
+            mode = "images"
+        return _render("convert_from_pdf.html", "convert-from-pdf", default_mode=mode)
 
     mode = request.form.get("mode", "images")
     files = [f for f in request.files.getlist("files") if f and f.filename]
@@ -291,6 +310,12 @@ def convert_from_pdf():
         ), 400
 
     return _build_bundle_and_qr(batch_id, uploads, bundle_name=f"{stem}.zip")
+
+
+@app.route("/convert-from-pdf")
+def convert_from_pdf_legacy():
+    """Old URL kept alive so shared links and search results keep working."""
+    return redirect(url_for("convert_from_pdf"), code=301)
 
 
 def _build_bundle_and_qr(batch_id, uploads, bundle_name=None):
@@ -351,9 +376,10 @@ def robots_txt():
 
 PUBLIC_PAGES = (
     ("index", "1.0", "weekly"),
-    ("pdf_to_qr", "0.9", "weekly"),
+    ("transfer", "0.9", "weekly"),
     ("convert", "0.9", "weekly"),
-    ("convert_from_pdf", "0.9", "weekly"),
+    ("convert_to_pdf", "0.8", "weekly"),
+    ("convert_from_pdf", "0.8", "weekly"),
     ("how_it_works", "0.6", "monthly"),
     ("faq", "0.6", "monthly"),
 )

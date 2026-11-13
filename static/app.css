@@ -302,6 +302,34 @@ h2.section-title { margin: 0; font-size: clamp(1.25rem, 3.2vw, 1.65rem); font-we
 .feat h3 { margin: 0 0 6px; font-size: .88rem; font-weight: 800; letter-spacing: -.01em; }
 .feat p { margin: 0; font-size: .81rem; font-weight: 600; color: var(--muted); line-height: 1.6; }
 
+/* ---------- conversion hub tiles ---------- */
+.group-head { text-align: center; margin-bottom: 16px; }
+.group-head .section-title { margin: 0; }
+.group-head .section-sub { margin-top: 6px; }
+.tile-grid {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+}
+.tile {
+    display: flex; flex-direction: column; gap: 7px;
+    padding: 18px; text-decoration: none; color: inherit;
+    background: #fff; border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 1px 2px rgba(20, 20, 43, .05), 0 6px 18px rgba(20, 20, 43, .04);
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.tile:hover { transform: translateY(-3px); border-color: #d9d6ff; box-shadow: 0 18px 38px -22px rgba(31, 25, 94, .45); }
+.tile h3 { margin: 0; font-size: .92rem; font-weight: 800; letter-spacing: -.01em; }
+.tile p { margin: 0; font-size: .76rem; font-weight: 600; color: var(--muted); line-height: 1.55; }
+.tile .t-go { margin-top: auto; padding-top: 4px; font-size: .74rem; font-weight: 800; color: var(--brand); }
+.t-ico {
+    width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+    font-size: .6rem; font-weight: 800; letter-spacing: .03em; margin-bottom: 4px;
+}
+.t-ico.img { background: #fff0f6; color: #e11d8f; }
+.t-ico.sheet, .t-ico.excel { background: #eefaf0; color: #0f7a3d; }
+.t-ico.text, .t-ico.word { background: #eef4ff; color: #1d4ed8; }
+.t-ico.pdf { background: #fff1f1; color: #e11d48; }
+
 /* ---------- device transfer flow ---------- */
 .section-sub {
     margin: 8px auto 0; max-width: 60ch; text-align: center;

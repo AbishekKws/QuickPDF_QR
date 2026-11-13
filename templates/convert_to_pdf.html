@@ -187,12 +187,12 @@
                 <li><b>Limit</b><span>{{ config.MAX_CONTENT_LENGTH // 1048576 }} MB per upload</span></li>
             </ul>
 
-            <form action="{{ url_for('convert') }}" method="post" enctype="multipart/form-data"
+            <form action="{{ url_for('convert_to_pdf') }}" method="post" enctype="multipart/form-data"
                   class="tool-form" data-busy="Converting…" data-multi-when="image">
                 <div class="chips" role="radiogroup" aria-label="What are you converting?">
-                    <label class="chip"><input type="radio" name="mode" value="image" checked><span>Image</span></label>
-                    <label class="chip"><input type="radio" name="mode" value="sheet"><span>Excel / CSV</span></label>
-                    <label class="chip"><input type="radio" name="mode" value="text"><span>Text</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="image" {% if default_mode|default('image') == 'image' %}checked{% endif %}><span>Image</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="sheet" {% if default_mode|default('image') == 'sheet' %}checked{% endif %}><span>Excel / CSV</span></label>
+                    <label class="chip"><input type="radio" name="mode" value="text" {% if default_mode|default('image') == 'text' %}checked{% endif %}><span>Text</span></label>
                 </div>
 
                 <label class="drop" for="convert_files">
@@ -223,8 +223,8 @@
         </section>
 
         <p class="center-cta">
-            <a class="backlink" href="{{ url_for('convert_from_pdf') }}">Going the other way? PDF → images, Word, Excel →</a>
-            <a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF you already have →</a>
+            <a class="backlink" href="{{ url_for('convert') }}">← All conversion tools</a>
+            <a class="backlink" href="{{ url_for('convert_from_pdf') }}">PDF → images, Word, Excel →</a>
         </p>
     </div>
 

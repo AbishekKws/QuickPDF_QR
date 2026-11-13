@@ -206,7 +206,7 @@
                     </div>
                     <h3>Into a PDF</h3>
                     <p>Photos become A4 pages, Excel and CSV sheets become a table, and text becomes a readable document. Nepali and English both render correctly.</p>
-                    <p class="feat-link"><a class="backlink" href="{{ url_for('convert') }}">Open the converter →</a></p>
+                    <p class="feat-link"><a class="backlink" href="{{ url_for('convert_to_pdf') }}">Open the converter →</a></p>
                 </article>
                 <article class="feat">
                     <div class="feat-icon">
@@ -227,7 +227,7 @@
                     </div>
                     <h3>Share the result</h3>
                     <p>Upload existing PDFs and get a QR code straight away, complete with a ZIP download and the original file names intact.</p>
-                    <p class="feat-link"><a class="backlink" href="{{ url_for('pdf_to_qr') }}">Share a PDF →</a></p>
+                    <p class="feat-link"><a class="backlink" href="{{ url_for('transfer') }}">Send a file →</a></p>
                 </article>
             </div>
         </section>
@@ -250,7 +250,7 @@
         </section>
 
         <p class="center-cta">
-            <a class="btn btn-primary" href="{{ url_for('pdf_to_qr') }}">Start with a PDF</a>
+            <a class="btn btn-primary" href="{{ url_for('transfer') }}">Start a transfer</a>
         </p>
     </div>
 {% endblock %}
